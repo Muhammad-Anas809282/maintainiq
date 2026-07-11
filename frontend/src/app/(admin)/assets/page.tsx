@@ -107,7 +107,7 @@ export default function AssetsPage() {
         />
       ) : (
         <Reveal>
-        <Card className="overflow-hidden">
+        <Card glass className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[--color-border] bg-[--color-surface-muted] text-xs uppercase tracking-wide text-[--color-text-subtle]">

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/api";
 import { Button, Field, Input, Alert } from "@/components/ui";
 import { AuthShell } from "@/components/auth-shell";
+import { SocialButtons } from "@/components/social-buttons";
 
 export default function SignupPage() {
   const { register } = useAuth();
@@ -78,6 +79,8 @@ export default function SignupPage() {
           Create account
         </Button>
       </form>
+
+      <SocialButtons />
 
       <p className="mt-6 text-center text-sm text-[--color-text-subtle]">
         Already have an account?{" "}

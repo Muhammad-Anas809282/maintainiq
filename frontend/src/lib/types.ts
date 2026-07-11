@@ -138,6 +138,8 @@ export interface DashboardSummary {
     byStatus: Record<string, number>;
     byPriority: Record<string, number>;
   };
+  rates: { operationalRate: number; resolutionRate: number };
+  trends: { date: string; count: number }[];
   recentIssues: Array<
     Pick<Issue, "number" | "title" | "status" | "priority" | "createdAt"> & {
       asset: { code: string; name: string };

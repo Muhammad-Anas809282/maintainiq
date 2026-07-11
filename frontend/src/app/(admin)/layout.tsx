@@ -112,7 +112,10 @@ export default function AdminLayout({
       </aside>
 
       {/* Main */}
-      <div className="flex min-w-0 flex-col">
+      <div
+        className="flex min-w-0 flex-col"
+        style={{ background: "var(--gradient-app)" }}
+      >
         {/* Mobile top nav */}
         <header className="flex items-center justify-between bg-[--color-sidebar] px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">

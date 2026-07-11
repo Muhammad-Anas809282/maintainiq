@@ -46,7 +46,7 @@ export function DonutChart({
     });
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex flex-col items-center gap-6 sm:flex-row">
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
           <circle
@@ -101,6 +101,128 @@ export function DonutChart({
         )}
       </ul>
     </div>
+  );
+}
+
+/** Animated radial gauge (0–100), e.g. a quality/operational score. */
+export function GaugeChart({
+  value,
+  label,
+  tone = "primary",
+  suffix = "%",
+}: {
+  value: number;
+  label: string;
+  tone?: keyof typeof TONE_COLOR;
+  suffix?: string;
+}) {
+  const reduce = useReducedMotion();
+  const size = 132;
+  const stroke = 12;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const pct = Math.max(0, Math.min(100, value)) / 100;
+  const dash = pct * c;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90">
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke="var(--color-surface-muted)"
+            strokeWidth={stroke}
+          />
+          <motion.circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke={TONE_COLOR[tone]}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${c - dash}`}
+            initial={reduce ? false : { strokeDasharray: `0 ${c}` }}
+            whileInView={reduce ? undefined : { strokeDasharray: `${dash} ${c - dash}` }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="font-display text-2xl font-bold text-[--color-text]">
+            {value}
+            <span className="text-base text-[--color-text-subtle]">{suffix}</span>
+          </span>
+        </div>
+      </div>
+      <p className="mt-2 text-center text-xs font-medium text-[--color-text-subtle]">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/** Animated area/line trend chart from a simple numeric series. */
+export function AreaChart({
+  data,
+  tone = "primary",
+}: {
+  data: { date: string; count: number }[];
+  tone?: keyof typeof TONE_COLOR;
+}) {
+  const reduce = useReducedMotion();
+  const w = 520;
+  const h = 160;
+  const pad = 8;
+  const max = Math.max(1, ...data.map((d) => d.count));
+  const stepX = data.length > 1 ? (w - pad * 2) / (data.length - 1) : 0;
+  const color = TONE_COLOR[tone];
+
+  const pts = data.map((d, i) => {
+    const x = pad + i * stepX;
+    const y = h - pad - (d.count / max) * (h - pad * 2);
+    return [x, y] as const;
+  });
+
+  const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
+  const area = `${line} L${pts[pts.length - 1]?.[0] ?? pad},${h - pad} L${pad},${h - pad} Z`;
+
+  return (
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      className="h-40 w-full"
+      preserveAspectRatio="none"
+    >
+      <defs>
+        <linearGradient id={`area-${tone}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <motion.path
+        d={area}
+        fill={`url(#area-${tone})`}
+        initial={reduce ? false : { opacity: 0 }}
+        whileInView={reduce ? undefined : { opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      />
+      <motion.path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduce ? false : { pathLength: 0 }}
+        whileInView={reduce ? undefined : { pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      />
+    </svg>
   );
 }
 

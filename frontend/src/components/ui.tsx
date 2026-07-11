@@ -39,13 +39,16 @@ export function Card({
   children,
   className = "",
   hover = false,
+  glass = false,
 }: {
   children: ReactNode;
   className?: string;
   hover?: boolean;
+  glass?: boolean;
 }) {
-  const base =
-    "rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] shadow-[--shadow-card]";
+  const base = glass
+    ? "glass rounded-[--radius-card]"
+    : "rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] shadow-[--shadow-card]";
   if (hover) {
     return (
       <motion.div

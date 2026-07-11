@@ -52,6 +52,10 @@
   /* Subtle brand gradients (accents only, never on body text) */
   --gradient-brand: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #2563eb 100%);
   --gradient-sheen: linear-gradient(135deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0));
+  /* Soft, professional app backdrop for glassmorphism */
+  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #e8ecfb 0%, transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, #e6f3fb 0%, transparent 50%),
+    linear-gradient(180deg, #f5f7fc 0%, #f7f8fa 100%);
 }
 
 * {
@@ -100,6 +104,21 @@ h1, h2, h3, h4, .font-display {
   background: var(--color-border-strong);
   border-radius: 9999px;
   border: 2px solid var(--color-bg);
+}
+
+/* Frosted glass surface — high opacity for readability (per taste rules) */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 40px -14px rgb(30 41 99 / 0.18);
+}
+.glass-strong {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 /* Shimmer for skeleton loading states */

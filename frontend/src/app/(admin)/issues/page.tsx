@@ -101,8 +101,8 @@ export default function IssuesPage() {
         />
       ) : (
         <Reveal>
-        <Card className="overflow-hidden">
-          <ul className="divide-y divide-[--color-border]">
+        <Card glass className="overflow-hidden">
+          <ul className="divide-y divide-white/50">
             {data?.data.map((issue, i) => (
               <motion.li
                 key={issue.id}

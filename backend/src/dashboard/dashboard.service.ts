@@ -57,6 +57,27 @@ export class DashboardService {
       }),
     ]);
 
+    // Derived rates for gauges.
+    const operationalCount =
+      assetsByStatus.find((r) => r.status === 'OPERATIONAL')?._count._all ?? 0;
+    const operationalRate =
+      totalAssets > 0 ? Math.round((operationalCount / totalAssets) * 100) : 0;
+    const resolvedCount =
+      (issuesByStatus.find((r) => r.status === 'RESOLVED')?._count._all ?? 0) +
+      (issuesByStatus.find((r) => r.status === 'CLOSED')?._count._all ?? 0);
+    const resolutionRate =
+      totalIssues > 0 ? Math.round((resolvedCount / totalIssues) * 100) : 0;
+
+    // 14-day issue-report trend (real time series).
+    const since = new Date();
+    since.setDate(since.getDate() - 13);
+    since.setHours(0, 0, 0, 0);
+    const recent = await this.prisma.issue.findMany({
+      where: { createdAt: { gte: since } },
+      select: { createdAt: true },
+    });
+    const trends = this.buildDailySeries(since, 14, recent);
+
     const toMap = (
       rows: Array<Record<string, unknown> & { _count: { _all: number } }>,
       key: string,
@@ -78,7 +99,31 @@ export class DashboardService {
         byStatus: toMap(issuesByStatus, 'status'),
         byPriority: toMap(issuesByPriority, 'priority'),
       },
+      rates: { operationalRate, resolutionRate },
+      trends,
       recentIssues,
     };
+  }
+
+  /** Bucket records into `days` daily counts starting at `start`. */
+  private buildDailySeries(
+    start: Date,
+    days: number,
+    records: { createdAt: Date }[],
+  ): { date: string; count: number }[] {
+    const buckets = new Map<string, number>();
+    for (let i = 0; i < days; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      buckets.set(d.toISOString().slice(0, 10), 0);
+    }
+    for (const r of records) {
+      const key = new Date(r.createdAt).toISOString().slice(0, 10);
+      if (buckets.has(key)) buckets.set(key, (buckets.get(key) ?? 0) + 1);
+    }
+    return Array.from(buckets.entries()).map(([date, count]) => ({
+      date,
+      count,
+    }));
   }
 }
