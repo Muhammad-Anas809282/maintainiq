@@ -129,6 +129,7 @@ export interface DashboardSummary {
   assets: {
     total: number;
     byStatus: Record<string, number>;
+    byCategory: Record<string, number>;
     dueService: number;
   };
   issues: {
@@ -138,8 +139,20 @@ export interface DashboardSummary {
     byStatus: Record<string, number>;
     byPriority: Record<string, number>;
   };
-  rates: { operationalRate: number; resolutionRate: number };
+  rates: {
+    operationalRate: number;
+    resolutionRate: number;
+    avgResolutionHours: number;
+  };
   trends: { date: string; count: number }[];
+  attentionAssets: Array<{
+    id: string;
+    code: string;
+    name: string;
+    location: string;
+    status: AssetStatus;
+    issueCount: number;
+  }>;
   recentIssues: Array<
     Pick<Issue, "number" | "title" | "status" | "priority" | "createdAt"> & {
       asset: { code: string; name: string };

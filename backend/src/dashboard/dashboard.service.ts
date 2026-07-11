@@ -26,6 +26,9 @@ export class DashboardService {
       criticalOpen,
       recentIssues,
       assetsDueService,
+      assetsByCategory,
+      attentionAssets,
+      resolvedIssues,
     ] = await Promise.all([
       this.prisma.asset.count(),
       this.prisma.asset.groupBy({ by: ['status'], _count: { _all: true } }),
@@ -55,6 +58,43 @@ export class DashboardService {
       this.prisma.asset.count({
         where: { nextServiceDate: { lte: new Date() } },
       }),
+      // Asset distribution by category.
+      this.prisma.asset.groupBy({
+        by: ['category'],
+        _count: { _all: true },
+        orderBy: { _count: { category: 'desc' } },
+        take: 6,
+      }),
+      // Assets that currently need attention (not operational / retired).
+      this.prisma.asset.findMany({
+        where: {
+          status: {
+            in: [
+              'ISSUE_REPORTED',
+              'UNDER_INSPECTION',
+              'UNDER_MAINTENANCE',
+              'OUT_OF_SERVICE',
+            ],
+          },
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: 6,
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          location: true,
+          status: true,
+          _count: { select: { issues: true } },
+        },
+      }),
+      // Resolved/closed issues for average resolution time.
+      this.prisma.issue.findMany({
+        where: { status: { in: ['RESOLVED', 'CLOSED'] } },
+        select: { createdAt: true, updatedAt: true },
+        take: 200,
+        orderBy: { updatedAt: 'desc' },
+      }),
     ]);
 
     // Derived rates for gauges.
@@ -78,6 +118,31 @@ export class DashboardService {
     });
     const trends = this.buildDailySeries(since, 14, recent);
 
+    // Average resolution time (hours) from created -> resolved.
+    let avgResolutionHours = 0;
+    if (resolvedIssues.length > 0) {
+      const totalMs = resolvedIssues.reduce(
+        (sum, i) =>
+          sum + (new Date(i.updatedAt).getTime() - new Date(i.createdAt).getTime()),
+        0,
+      );
+      avgResolutionHours =
+        Math.round((totalMs / resolvedIssues.length / 3_600_000) * 10) / 10;
+    }
+
+    const byCategory: Record<string, number> = Object.fromEntries(
+      assetsByCategory.map((r) => [r.category, r._count._all]),
+    );
+
+    const attention = attentionAssets.map((a) => ({
+      id: a.id,
+      code: a.code,
+      name: a.name,
+      location: a.location,
+      status: a.status,
+      issueCount: a._count.issues,
+    }));
+
     const toMap = (
       rows: Array<Record<string, unknown> & { _count: { _all: number } }>,
       key: string,
@@ -90,6 +155,7 @@ export class DashboardService {
       assets: {
         total: totalAssets,
         byStatus: toMap(assetsByStatus, 'status'),
+        byCategory,
         dueService: assetsDueService,
       },
       issues: {
@@ -99,8 +165,9 @@ export class DashboardService {
         byStatus: toMap(issuesByStatus, 'status'),
         byPriority: toMap(issuesByPriority, 'priority'),
       },
-      rates: { operationalRate, resolutionRate },
+      rates: { operationalRate, resolutionRate, avgResolutionHours },
       trends,
+      attentionAssets: attention,
       recentIssues,
     };
   }

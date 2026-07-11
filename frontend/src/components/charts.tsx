@@ -9,7 +9,22 @@ const TONE_COLOR: Record<string, string> = {
   info: "#0284c7",
   primary: "#4f46e5",
   neutral: "#94a3b8",
+  accent: "#7c3aed",
+  sky: "#0ea5e9",
+  teal: "#14b8a6",
+  violet: "#8b5cf6",
+  rose: "#f43f5e",
 };
+
+// Rotating palette for categorical charts (professional, varied).
+export const CATEGORY_TONES: (keyof typeof TONE_COLOR)[] = [
+  "primary",
+  "sky",
+  "teal",
+  "violet",
+  "warning",
+  "rose",
+];
 
 export interface Segment {
   label: string;
@@ -101,6 +116,41 @@ export function DonutChart({
         )}
       </ul>
     </div>
+  );
+}
+
+/** Tiny sparkline for KPI cards. */
+export function Sparkline({
+  data,
+  tone = "primary",
+}: {
+  data: number[];
+  tone?: keyof typeof TONE_COLOR;
+}) {
+  const reduce = useReducedMotion();
+  const w = 100;
+  const h = 32;
+  const max = Math.max(1, ...data);
+  const stepX = data.length > 1 ? w / (data.length - 1) : 0;
+  const pts = data.map((v, i) => [i * stepX, h - (v / max) * (h - 4) - 2] as const);
+  const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
+  const color = TONE_COLOR[tone];
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="h-8 w-full" preserveAspectRatio="none">
+      <motion.path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduce ? false : { pathLength: 0 }}
+        whileInView={reduce ? undefined : { pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      />
+    </svg>
   );
 }
 

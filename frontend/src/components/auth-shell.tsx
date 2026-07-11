@@ -21,6 +21,7 @@ export function AuthShell({
         className="relative hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-12"
         style={{ background: "var(--gradient-brand)" }}
       >
+        <div className="dot-grid pointer-events-none absolute inset-0 opacity-60" />
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="animate-floaty absolute -right-16 -top-16 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
           <div className="animate-floaty-slow absolute -bottom-24 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
@@ -62,6 +63,26 @@ export function AuthShell({
             AI-powered QR maintenance and asset-history platform for teams that
             care about accountability.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.42 }}
+            className="mt-8 flex gap-8"
+          >
+            {[
+              { k: "AI", v: "Triage" },
+              { k: "QR", v: "Access" },
+              { k: "100%", v: "History" },
+            ].map((s) => (
+              <div key={s.v}>
+                <p className="font-display text-2xl font-bold text-white">
+                  {s.k}
+                </p>
+                <p className="text-xs text-white/70">{s.v}</p>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
 

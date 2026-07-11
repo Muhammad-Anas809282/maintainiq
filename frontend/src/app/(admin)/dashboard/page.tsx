@@ -16,6 +16,7 @@ import {
   BarChart,
   GaugeChart,
   AreaChart,
+  CATEGORY_TONES,
   type Segment,
 } from "@/components/charts";
 import {
@@ -25,28 +26,41 @@ import {
   formatDate,
 } from "@/lib/labels";
 
-function StatCard({
+function StatTile({
   label,
   value,
   accent,
+  suffix,
 }: {
   label: string;
   value: number;
   accent?: string;
+  suffix?: string;
 }) {
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
     >
       <Card glass hover className="p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[--color-text-subtle]">
-          {label}
-        </p>
+        <div className="flex items-center gap-2">
+          <span
+            className="h-2 w-2 rounded-full"
+            style={{ background: accent ?? "var(--color-primary)" }}
+          />
+          <p className="text-xs font-semibold uppercase tracking-wide text-[--color-text-subtle]">
+            {label}
+          </p>
+        </div>
         <p
           className="mt-2 font-display text-4xl font-bold tracking-tight"
           style={{ color: accent ?? "var(--color-text)" }}
         >
           <AnimatedNumber value={value} />
+          {suffix && (
+            <span className="ml-1 text-lg text-[--color-text-subtle]">
+              {suffix}
+            </span>
+          )}
         </p>
       </Card>
     </motion.div>
@@ -77,8 +91,8 @@ export default function DashboardPage() {
           ))}
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
-          <Skeleton className="h-64 lg:col-span-2" />
-          <Skeleton className="h-64" />
+          <Skeleton className="h-72 lg:col-span-2" />
+          <Skeleton className="h-72" />
         </div>
       </div>
     );
@@ -101,36 +115,56 @@ export default function DashboardPage() {
       tone: priorityMeta[p].tone,
     }));
 
+  const categorySegments: Segment[] = Object.entries(data.assets.byCategory).map(
+    ([label, value], i) => ({
+      label,
+      value,
+      tone: CATEGORY_TONES[i % CATEGORY_TONES.length],
+    }),
+  );
+
   const trendTotal = data.trends.reduce((s, d) => s + d.count, 0);
 
   return (
     <div className="space-y-6">
-      <Reveal>
-        <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
-          Dashboard
-        </h1>
-        <p className="mt-1.5 text-sm text-[--color-text-subtle]">
-          Operational overview of assets and maintenance issues.
-        </p>
+      <Reveal className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
+            Dashboard
+          </h1>
+          <p className="mt-1.5 text-sm text-[--color-text-subtle]">
+            Operational overview of assets and maintenance issues.
+          </p>
+        </div>
+        <Badge tone="success">Live</Badge>
       </Reveal>
 
       {/* KPI tiles */}
       <Stagger className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total Assets" value={data.assets.total} />
-        <StatCard label="Open Issues" value={data.issues.open} />
-        <StatCard
+        <StatTile
+          label="Total Assets"
+          value={data.assets.total}
+          accent="var(--color-primary)"
+        />
+        <StatTile
+          label="Open Issues"
+          value={data.issues.open}
+          accent="var(--color-accent-2)"
+        />
+        <StatTile
           label="Critical Open"
           value={data.issues.criticalOpen}
-          accent={data.issues.criticalOpen > 0 ? "var(--color-danger)" : undefined}
+          accent={data.issues.criticalOpen > 0 ? "var(--color-danger)" : "var(--color-neutral)"}
         />
-        <StatCard
-          label="Service Due"
-          value={data.assets.dueService}
-          accent={data.assets.dueService > 0 ? "var(--color-warning)" : undefined}
+        <StatTile
+          label="Avg Resolution"
+          value={data.rates.avgResolutionHours}
+          accent="var(--color-accent-3)"
+          suffix="h"
         />
       </Stagger>
 
-      {/* Trend + gauges row (bento) */}
+      {/* Trend + dark highlight card */}
       <div className="grid gap-6 lg:grid-cols-3">
         <Reveal className="lg:col-span-2">
           <Card glass className="h-full p-6">
@@ -155,25 +189,42 @@ export default function DashboardPage() {
         </Reveal>
 
         <Reveal delay={0.05}>
-          <Card glass className="flex h-full flex-wrap items-center justify-around gap-4 p-6">
-            <GaugeChart
-              value={data.rates.operationalRate}
-              label="Operational"
-              tone="success"
-            />
-            <GaugeChart
-              value={data.rates.resolutionRate}
-              label="Resolution"
-              tone="primary"
-            />
-          </Card>
+          <div
+            className="relative flex h-full flex-col justify-between overflow-hidden rounded-[--radius-card] p-6 text-white"
+            style={{ background: "var(--gradient-dark-card)" }}
+          >
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative">
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
+                Operational rate
+              </p>
+              <p className="mt-2 font-display text-5xl font-bold">
+                <AnimatedNumber value={data.rates.operationalRate} />
+                <span className="text-2xl text-white/70">%</span>
+              </p>
+            </div>
+            <div className="relative mt-6 grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-white/60">Resolution</p>
+                <p className="font-display text-xl font-bold">
+                  {data.rates.resolutionRate}%
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-white/60">Service due</p>
+                <p className="font-display text-xl font-bold">
+                  {data.assets.dueService}
+                </p>
+              </div>
+            </div>
+          </div>
         </Reveal>
       </div>
 
       {/* Distribution row */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-3">
         <Reveal>
-          <Card glass className="p-6">
+          <Card glass className="h-full p-6">
             <h2 className="font-display text-base font-semibold text-[--color-text]">
               Assets by status
             </h2>
@@ -188,13 +239,85 @@ export default function DashboardPage() {
         </Reveal>
 
         <Reveal delay={0.05}>
-          <Card glass className="p-6">
+          <Card glass className="flex h-full flex-wrap items-center justify-around gap-4 p-6">
+            <GaugeChart
+              value={data.rates.operationalRate}
+              label="Operational"
+              tone="success"
+            />
+            <GaugeChart
+              value={data.rates.resolutionRate}
+              label="Resolution"
+              tone="primary"
+            />
+          </Card>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <Card glass className="h-full p-6">
             <h2 className="font-display text-base font-semibold text-[--color-text]">
               Issues by priority
             </h2>
             <div className="mt-6">
               <BarChart segments={prioritySegments} />
             </div>
+          </Card>
+        </Reveal>
+      </div>
+
+      {/* Category + attention */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Reveal>
+          <Card glass className="h-full p-6">
+            <h2 className="font-display text-base font-semibold text-[--color-text]">
+              Assets by category
+            </h2>
+            <div className="mt-6">
+              <BarChart segments={categorySegments} />
+            </div>
+          </Card>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <Card glass className="overflow-hidden">
+            <div className="border-b border-white/50 px-6 py-4">
+              <h2 className="font-display text-base font-semibold text-[--color-text]">
+                Needs attention
+              </h2>
+            </div>
+            {data.attentionAssets.length === 0 ? (
+              <p className="px-6 py-10 text-center text-sm text-[--color-text-subtle]">
+                All assets operational.
+              </p>
+            ) : (
+              <ul className="divide-y divide-white/50">
+                {data.attentionAssets.map((a, i) => (
+                  <motion.li
+                    key={a.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.04 * i, duration: 0.3 }}
+                  >
+                    <Link
+                      href={`/assets/${a.id}`}
+                      className="flex items-center justify-between gap-3 px-6 py-3 transition-colors hover:bg-white/40"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-[--color-text]">
+                          {a.name}
+                        </p>
+                        <p className="text-xs text-[--color-text-subtle]">
+                          {a.code} · {a.location}
+                        </p>
+                      </div>
+                      <Badge tone={assetStatusMeta[a.status].tone}>
+                        {assetStatusMeta[a.status].label}
+                      </Badge>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            )}
           </Card>
         </Reveal>
       </div>
