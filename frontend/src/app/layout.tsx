@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 
@@ -9,8 +9,15 @@ const inter = Inter({
   display: "swap",
 });
 
+const sora = Sora({
+  variable: "--font-sora",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "MaintainIQ — Asset Maintenance Platform",
+  title: "MaintainIQ — AI-Powered Asset Maintenance",
   description:
     "AI-powered QR maintenance & asset history platform. Report issues, triage intelligently, and preserve a complete maintenance history.",
 };
@@ -26,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${sora.variable} h-full`}>
       <body className="min-h-full">
         <AuthProvider>{children}</AuthProvider>
       </body>

@@ -20,6 +20,7 @@ import {
   Alert,
   Spinner,
 } from "@/components/ui";
+import { Reveal, motion } from "@/components/motion";
 import { IconLogo, IconSparkles, IconCheck } from "@/components/icons";
 import {
   assetStatusMeta,
@@ -109,6 +110,7 @@ export default function PublicAssetPage() {
 
   return (
     <Shell>
+      <Reveal>
       <Card className="overflow-hidden">
         <div className="border-b border-[--color-border] bg-[--color-surface-muted] px-5 py-4">
           <div className="flex items-center justify-between gap-3">
@@ -116,11 +118,17 @@ export default function PublicAssetPage() {
               <p className="font-mono text-xs font-semibold text-[--color-primary]">
                 {asset.code}
               </p>
-              <h1 className="mt-0.5 text-lg font-bold text-[--color-text]">
+              <h1 className="mt-0.5 font-display text-lg font-bold text-[--color-text]">
                 {asset.name}
               </h1>
             </div>
-            <Badge tone={meta.tone}>{meta.label}</Badge>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Badge tone={meta.tone}>{meta.label}</Badge>
+            </motion.div>
           </div>
         </div>
         <dl className="grid grid-cols-2 gap-4 px-5 py-4 text-sm">
@@ -133,6 +141,7 @@ export default function PublicAssetPage() {
           />
         </dl>
       </Card>
+      </Reveal>
 
       {asset.isRetired && (
         <Alert tone="warning">
@@ -141,6 +150,7 @@ export default function PublicAssetPage() {
       )}
 
       {asset.recentActivity.length > 0 && (
+        <Reveal delay={0.08}>
         <Card className="p-5">
           <h2 className="text-sm font-semibold text-[--color-text]">
             Recent activity
@@ -161,6 +171,7 @@ export default function PublicAssetPage() {
             ))}
           </ul>
         </Card>
+        </Reveal>
       )}
 
       {asset.canReportIssue &&

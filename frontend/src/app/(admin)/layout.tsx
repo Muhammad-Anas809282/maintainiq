@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth";
 import { Spinner } from "@/components/ui";
 import {
@@ -41,14 +42,14 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
-      {/* Sidebar */}
-      <aside className="hidden border-r border-[--color-border] bg-[--color-surface] lg:flex lg:flex-col">
-        <div className="flex items-center gap-2.5 px-6 py-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[--color-primary] text-[--color-primary-contrast]">
+    <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
+      {/* Sidebar (deep slate) */}
+      <aside className="hidden bg-[--color-sidebar] lg:flex lg:flex-col">
+        <div className="flex items-center gap-2.5 px-6 py-6">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white">
             <IconLogo className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-[--color-text]">
+          <span className="font-display text-lg font-bold tracking-tight text-[--color-sidebar-text-strong]">
             MaintainIQ
           </span>
         </div>
@@ -62,36 +63,47 @@ export default function AdminLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                  active
-                    ? "bg-[--color-primary-soft] text-[--color-primary]"
-                    : "text-[--color-text-muted] hover:bg-[--color-surface-muted] hover:text-[--color-text]"
-                }`}
+                className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200"
               >
-                <Icon className="h-5 w-5" />
-                {item.label}
+                {active && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute inset-0 rounded-lg bg-[--color-sidebar-active]"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span
+                  className={`relative z-10 flex items-center gap-3 ${
+                    active
+                      ? "text-[--color-sidebar-text-strong]"
+                      : "text-[--color-sidebar-text] hover:text-[--color-sidebar-text-strong]"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  {item.label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="border-t border-[--color-border] p-3">
-          <div className="flex items-center gap-3 rounded-lg px-3 py-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[--color-primary-soft] text-sm font-bold text-[--color-primary]">
+        <div className="p-3">
+          <div className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-white">
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-[--color-text]">
+              <p className="truncate text-sm font-semibold text-[--color-sidebar-text-strong]">
                 {user.name}
               </p>
-              <p className="truncate text-xs text-[--color-text-subtle]">
+              <p className="truncate text-xs text-[--color-sidebar-text]">
                 {user.role}
               </p>
             </div>
             <button
               onClick={logout}
               aria-label="Sign out"
-              className="rounded-lg p-2 text-[--color-text-subtle] hover:bg-[--color-surface-muted] hover:text-[--color-danger] transition-colors cursor-pointer"
+              className="cursor-pointer rounded-lg p-2 text-[--color-sidebar-text] transition-colors hover:bg-white/10 hover:text-white"
             >
               <IconLogout className="h-5 w-5" />
             </button>
@@ -102,17 +114,19 @@ export default function AdminLayout({
       {/* Main */}
       <div className="flex min-w-0 flex-col">
         {/* Mobile top nav */}
-        <header className="flex items-center justify-between border-b border-[--color-border] bg-[--color-surface] px-4 py-3 lg:hidden">
+        <header className="flex items-center justify-between bg-[--color-sidebar] px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[--color-primary] text-[--color-primary-contrast]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white">
               <IconLogo className="h-4 w-4" />
             </div>
-            <span className="font-bold text-[--color-text]">MaintainIQ</span>
+            <span className="font-display font-bold text-[--color-sidebar-text-strong]">
+              MaintainIQ
+            </span>
           </div>
           <button
             onClick={logout}
             aria-label="Sign out"
-            className="rounded-lg p-2 text-[--color-text-subtle] hover:bg-[--color-surface-muted] cursor-pointer"
+            className="cursor-pointer rounded-lg p-2 text-[--color-sidebar-text] hover:bg-white/10"
           >
             <IconLogout className="h-5 w-5" />
           </button>
@@ -138,8 +152,18 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          {children}
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>

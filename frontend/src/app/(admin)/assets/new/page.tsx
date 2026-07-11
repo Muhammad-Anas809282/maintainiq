@@ -56,7 +56,7 @@ export default function NewAssetPage() {
         >
           ← Back to assets
         </Link>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-[--color-text]">
+        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[--color-text]">
           Register Asset
         </h1>
         <p className="mt-1 text-sm text-[--color-text-subtle]">

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "motion/react";
 import type { ComponentProps, ReactNode } from "react";
 
 type Tone = "success" | "warning" | "danger" | "info" | "neutral" | "primary";
@@ -35,27 +38,35 @@ export function Badge({
 export function Card({
   children,
   className = "",
+  hover = false,
 }: {
   children: ReactNode;
   className?: string;
+  hover?: boolean;
 }) {
-  return (
-    <div
-      className={`rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] shadow-[--shadow-card] ${className}`}
-    >
-      {children}
-    </div>
-  );
+  const base =
+    "rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] shadow-[--shadow-card]";
+  if (hover) {
+    return (
+      <motion.div
+        whileHover={{ y: -4 }}
+        transition={{ type: "spring", stiffness: 300, damping: 24 }}
+        className={`${base} transition-shadow duration-200 hover:shadow-[--shadow-lift] ${className}`}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+  return <div className={`${base} ${className}`}>{children}</div>;
 }
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
-    "bg-[--color-primary] text-[--color-primary-contrast] hover:bg-[--color-primary-hover]",
+    "bg-[--color-primary] text-[--color-primary-contrast] hover:bg-[--color-primary-hover] shadow-[0_6px_18px_-6px_rgb(79_70_229/0.5)]",
   secondary:
     "bg-[--color-surface] text-[--color-text] border border-[--color-border-strong] hover:bg-[--color-surface-muted]",
-  danger:
-    "bg-[--color-danger] text-white hover:opacity-90",
+  danger: "bg-[--color-danger] text-white hover:opacity-90",
   ghost: "text-[--color-text-muted] hover:bg-[--color-surface-muted]",
 };
 
@@ -71,14 +82,16 @@ export function Button({
   loading?: boolean;
 } & ComponentProps<"button">) {
   return (
-    <button
-      {...props}
+    <motion.button
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 22 }}
+      {...(props as ComponentProps<typeof motion.button>)}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer ${buttonVariants[variant]} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${buttonVariants[variant]} ${className}`}
     >
       {loading && <Spinner className="h-4 w-4" />}
       {children}
-    </button>
+    </motion.button>
   );
 }
 
@@ -96,7 +109,7 @@ export function LinkButton({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-200 cursor-pointer ${buttonVariants[variant]} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 ${buttonVariants[variant]} ${className}`}
     >
       {children}
     </Link>
@@ -128,6 +141,10 @@ export function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
+export function Skeleton({ className = "" }: { className?: string }) {
+  return <div className={`skeleton rounded-lg ${className}`} />;
+}
+
 export function Field({
   label,
   htmlFor,
@@ -154,7 +171,7 @@ export function Field({
 }
 
 const inputBase =
-  "w-full rounded-lg border border-[--color-border-strong] bg-[--color-surface] px-3 py-2 text-sm text-[--color-text] placeholder:text-[--color-text-subtle] focus:border-[--color-primary] focus:outline-none focus:ring-2 focus:ring-[--color-primary-soft] transition-colors";
+  "w-full rounded-lg border border-[--color-border-strong] bg-[--color-surface] px-3.5 py-2.5 text-sm text-[--color-text] placeholder:text-[--color-text-subtle] focus:border-[--color-primary] focus:outline-none focus:ring-4 focus:ring-[--color-primary-soft] transition-colors";
 
 export function Input(props: ComponentProps<"input">) {
   return <input {...props} className={`${inputBase} ${props.className ?? ""}`} />;
@@ -192,9 +209,13 @@ export function Alert({
     warning: "bg-[--color-warning-soft] text-[--color-warning]",
   };
   return (
-    <div className={`rounded-lg px-4 py-3 text-sm font-medium ${map[tone]}`}>
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`rounded-lg px-4 py-3 text-sm font-medium ${map[tone]}`}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }
 

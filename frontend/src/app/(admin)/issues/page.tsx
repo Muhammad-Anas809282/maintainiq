@@ -9,7 +9,8 @@ import type {
   IssueStatus,
   Paginated,
 } from "@/lib/types";
-import { Card, Badge, Select, Spinner, EmptyState } from "@/components/ui";
+import { Card, Badge, Select, Skeleton, EmptyState } from "@/components/ui";
+import { Reveal, motion } from "@/components/motion";
 import {
   issueStatusMeta,
   priorityMeta,
@@ -53,14 +54,14 @@ export default function IssuesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[--color-text]">
+      <Reveal>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
           Issues
         </h1>
-        <p className="mt-1 text-sm text-[--color-text-subtle]">
+        <p className="mt-1.5 text-sm text-[--color-text-subtle]">
           {data ? `${data.meta.total} total` : "Loading…"}
         </p>
-      </div>
+      </Reveal>
 
       <div className="flex flex-wrap gap-3">
         <Select
@@ -92,19 +93,23 @@ export default function IssuesPage() {
       </div>
 
       {loading && !data ? (
-        <div className="flex justify-center py-20 text-[--color-text-subtle]">
-          <Spinner />
-        </div>
+        <Skeleton className="h-80" />
       ) : data && data.data.length === 0 ? (
         <EmptyState
           title="No issues found"
           description="No issues match the current filters."
         />
       ) : (
+        <Reveal>
         <Card className="overflow-hidden">
           <ul className="divide-y divide-[--color-border]">
-            {data?.data.map((issue) => (
-              <li key={issue.id}>
+            {data?.data.map((issue, i) => (
+              <motion.li
+                key={issue.id}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.3 }}
+              >
                 <button
                   onClick={() => router.push(`/issues/${issue.id}`)}
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-[--color-surface-muted] cursor-pointer"
@@ -140,10 +145,11 @@ export default function IssuesPage() {
                     </Badge>
                   </div>
                 </button>
-              </li>
+              </motion.li>
             ))}
           </ul>
         </Card>
+        </Reveal>
       )}
     </div>
   );

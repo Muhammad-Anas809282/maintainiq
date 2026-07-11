@@ -101,7 +101,7 @@ export default function IssueDetailPage() {
                 {issueStatusMeta[s].label}
               </Badge>
             </div>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-[--color-text]">
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[--color-text]">
               {issue.title}
             </h1>
             {issue.asset && (

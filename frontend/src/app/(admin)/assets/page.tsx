@@ -10,9 +10,10 @@ import {
   Input,
   Select,
   LinkButton,
-  Spinner,
+  Skeleton,
   EmptyState,
 } from "@/components/ui";
+import { Reveal } from "@/components/motion";
 import { IconPlus, IconSearch } from "@/components/icons";
 import { assetStatusMeta, formatDateShort } from "@/lib/labels";
 import { useAuth } from "@/lib/auth";
@@ -54,12 +55,12 @@ export default function AssetsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <Reveal className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[--color-text]">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
             Assets
           </h1>
-          <p className="mt-1 text-sm text-[--color-text-subtle]">
+          <p className="mt-1.5 text-sm text-[--color-text-subtle]">
             {data ? `${data.meta.total} total` : "Loading…"}
           </p>
         </div>
@@ -69,7 +70,7 @@ export default function AssetsPage() {
             New Asset
           </LinkButton>
         )}
-      </div>
+      </Reveal>
 
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-56">
@@ -98,15 +99,14 @@ export default function AssetsPage() {
       </div>
 
       {loading && !data ? (
-        <div className="flex justify-center py-20 text-[--color-text-subtle]">
-          <Spinner />
-        </div>
+        <Skeleton className="h-80" />
       ) : data && data.data.length === 0 ? (
         <EmptyState
           title="No assets found"
           description="Try adjusting your search, or register a new asset."
         />
       ) : (
+        <Reveal>
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -153,6 +153,7 @@ export default function AssetsPage() {
             </table>
           </div>
         </Card>
+        </Reveal>
       )}
     </div>
   );

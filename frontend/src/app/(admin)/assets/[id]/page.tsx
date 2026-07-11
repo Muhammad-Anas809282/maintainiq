@@ -115,7 +115,7 @@ export default function AssetDetailPage() {
         <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-[--color-text]">
+              <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
                 {asset.name}
               </h1>
               <Badge tone={meta.tone}>{meta.label}</Badge>
