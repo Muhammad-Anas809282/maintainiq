@@ -2,7 +2,9 @@
 // AI-powered QR asset-maintenance platform (SMIT Final Hackathon, Track A)
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // native for local dev; rhel targets for Vercel's serverless Linux runtime.
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
