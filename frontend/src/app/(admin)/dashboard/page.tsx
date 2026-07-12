@@ -203,9 +203,10 @@ export default function DashboardPage() {
 
         <Reveal direction="right" delay={0.05}>
           <div
-            className="grain relative flex h-full flex-col justify-between overflow-hidden rounded-[var(--radius-editorial)] p-6 text-white"
+            className="relative flex h-full flex-col justify-between overflow-hidden rounded-[var(--radius-editorial)] p-6 text-white"
             style={{ background: "var(--gradient-dark-card)" }}
           >
+            <div className="grain pointer-events-none absolute inset-0 opacity-[0.06]" />
             <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
             <div className="relative">
               <p className="text-xs font-semibold uppercase tracking-wide text-white/70">

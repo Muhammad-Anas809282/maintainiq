@@ -126,9 +126,10 @@ export default function PublicAssetPage() {
       >
       <Card glass className="overflow-hidden !rounded-[var(--radius-editorial)]">
         <div
-          className="grain relative overflow-hidden px-5 py-5"
+          className="relative overflow-hidden px-5 py-5"
           style={{ background: "var(--gradient-editorial-hero)" }}
         >
+          <div className="grain pointer-events-none absolute inset-0 opacity-[0.06]" />
           <div className="relative flex items-center justify-between gap-3">
             <div>
               <p className="font-mono text-xs font-semibold text-[var(--color-gold)]">

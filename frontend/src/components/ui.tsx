@@ -53,12 +53,16 @@ export function Card({
   const resolvedTone = glass ? "glass" : tone;
   const base =
     resolvedTone === "editorial"
-      ? "grain relative overflow-hidden rounded-[var(--radius-editorial)] text-white shadow-[var(--shadow-pop)]"
+      ? "relative overflow-hidden rounded-[var(--radius-editorial)] text-white shadow-[var(--shadow-pop)]"
       : resolvedTone === "glass"
         ? "glass rounded-[var(--radius-card)]"
         : "rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]";
   const editorialBg =
     resolvedTone === "editorial" ? { background: "var(--gradient-editorial-hero)" } : undefined;
+  const grainOverlay =
+    resolvedTone === "editorial" ? (
+      <div className="grain pointer-events-none absolute inset-0 opacity-[0.06]" />
+    ) : null;
 
   if (hover) {
     return (
@@ -68,12 +72,14 @@ export function Card({
         style={editorialBg}
         className={`${base} transition-shadow duration-200 hover:shadow-[var(--shadow-lift)] ${className}`}
       >
+        {grainOverlay}
         {children}
       </motion.div>
     );
   }
   return (
     <div style={editorialBg} className={`${base} ${className}`}>
+      {grainOverlay}
       {children}
     </div>
   );
