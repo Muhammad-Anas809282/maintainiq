@@ -110,7 +110,7 @@ export function AuthIllustration() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-mono text-[10px] font-bold text-[--color-primary]">
+              <p className="font-mono text-[10px] font-bold text-[var(--color-primary)]">
                 AST-0001
               </p>
               <p className="font-display text-sm font-bold text-slate-900">
@@ -128,7 +128,7 @@ export function AuthIllustration() {
                 className="pointer-events-none absolute inset-x-0 z-10 h-7"
                 style={{
                   background:
-                    "linear-gradient(180deg, transparent 0%, rgb(37 99 235 / 0.4) 50%, transparent 100%)",
+                    "linear-gradient(180deg, transparent 0%, rgb(200 162 92 / 0.45) 50%, transparent 100%)",
                 }}
                 animate={{ top: ["0%", "94%", "0%"] }}
                 transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
@@ -162,13 +162,13 @@ export function AuthIllustration() {
           className="animate-floaty-slow absolute -right-2 top-2 cursor-default rounded-xl bg-white/95 px-3 py-2 shadow-[0_20px_40px_-16px_rgba(15,23,42,0.45)]"
         >
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[--color-primary-soft]">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-primary-soft)]">
               <svg
                 width="14"
                 height="14"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#4f46e5"
+                stroke="#8f6425"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"

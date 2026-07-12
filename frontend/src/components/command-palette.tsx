@@ -140,15 +140,15 @@ export function CommandPalette() {
             onClick={() => setOpen(false)}
           >
             <motion.div
-              className="w-full max-w-xl overflow-hidden rounded-2xl border border-[--color-border] bg-[--color-surface] shadow-[--shadow-pop]"
+              className="glass-strong w-full max-w-xl overflow-hidden rounded-2xl shadow-[var(--shadow-pop)]"
               initial={{ opacity: 0, y: -12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 320, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 border-b border-[--color-border] px-4">
-                <IconSearch className="h-5 w-5 shrink-0 text-[--color-text-subtle]" />
+              <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-4">
+                <IconSearch className="h-5 w-5 shrink-0 text-[var(--color-text-subtle)]" />
                 <input
                   ref={inputRef}
                   value={query}
@@ -156,12 +156,12 @@ export function CommandPalette() {
                   onKeyDown={onKeyDown}
                   placeholder="Search assets and issues…"
                   aria-label="Search assets and issues"
-                  className="w-full bg-transparent py-4 text-sm text-[--color-text] outline-none placeholder:text-[--color-text-subtle]"
+                  className="w-full bg-transparent py-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-subtle)]"
                 />
                 {loading ? (
-                  <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-[--color-border-strong] border-t-[--color-primary]" />
+                  <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-[var(--color-border-strong)] border-t-[var(--color-primary)]" />
                 ) : (
-                  <kbd className="shrink-0 rounded border border-[--color-border] px-1.5 py-0.5 text-[10px] text-[--color-text-subtle]">
+                  <kbd className="shrink-0 rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] text-[var(--color-text-subtle)]">
                     ESC
                   </kbd>
                 )}
@@ -172,13 +172,13 @@ export function CommandPalette() {
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="px-3 py-8 text-center text-sm text-[--color-text-subtle]"
+                    className="px-3 py-8 text-center text-sm text-[var(--color-text-subtle)]"
                   >
                     No results for &ldquo;{query}&rdquo;.
                   </motion.p>
                 )}
                 {!query && (
-                  <p className="px-3 py-8 text-center text-sm text-[--color-text-subtle]">
+                  <p className="px-3 py-8 text-center text-sm text-[var(--color-text-subtle)]">
                     Type to search assets and issues.
                   </p>
                 )}
@@ -242,15 +242,15 @@ export function CommandPalette() {
               </div>
 
               {results.length > 0 && (
-                <div className="flex items-center gap-4 border-t border-[--color-border] bg-[--color-surface-muted] px-4 py-2.5 text-[11px] text-[--color-text-subtle]">
+                <div className="flex items-center gap-4 border-t border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2.5 text-[11px] text-[var(--color-text-subtle)]">
                   <span className="flex items-center gap-1.5">
-                    <kbd className="rounded border border-[--color-border-strong] bg-[--color-surface] px-1.5 py-0.5 font-sans">
+                    <kbd className="rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-1.5 py-0.5 font-sans">
                       ↑↓
                     </kbd>
                     Navigate
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <kbd className="rounded border border-[--color-border-strong] bg-[--color-surface] px-1.5 py-0.5 font-sans">
+                    <kbd className="rounded border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-1.5 py-0.5 font-sans">
                       ↵
                     </kbd>
                     Open
@@ -268,7 +268,7 @@ export function CommandPalette() {
 function ResultGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-1 last:mb-0">
-      <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-[--color-text-subtle]">
+      <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
         {label}
       </p>
       {children}
@@ -300,23 +300,23 @@ function ResultRow({
       onMouseEnter={onHover}
       onClick={onSelect}
       className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${
-        active ? "bg-[--color-primary-soft]" : "hover:bg-[--color-surface-muted]"
+        active ? "bg-[var(--color-primary-soft)]" : "hover:bg-[var(--color-surface-muted)]"
       }`}
     >
       <span
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-          active ? "bg-[--color-primary]" : "bg-[--color-surface-muted]"
+          active ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-muted)]"
         }`}
       >
         <Icon
-          className={`h-4 w-4 ${active ? "text-white" : "text-[--color-text-subtle]"}`}
+          className={`h-4 w-4 ${active ? "text-white" : "text-[var(--color-text-subtle)]"}`}
         />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-[--color-text]">
+        <p className="truncate text-sm font-medium text-[var(--color-text)]">
           {result.title}
         </p>
-        <p className="truncate text-xs text-[--color-text-subtle]">
+        <p className="truncate text-xs text-[var(--color-text-subtle)]">
           {result.subtitle}
         </p>
       </div>

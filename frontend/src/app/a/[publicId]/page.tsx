@@ -22,6 +22,7 @@ import {
 import { SelectMenu } from "@/components/select-menu";
 import Image from "next/image";
 import { Reveal, motion } from "@/components/motion";
+import { AnimatePresence } from "motion/react";
 import { IconSparkles, IconCheck } from "@/components/icons";
 import {
   assetStatusMeta,
@@ -55,11 +56,11 @@ export default function PublicAssetPage() {
   if (notFound)
     return (
       <Shell>
-        <Card className="p-8 text-center">
-          <h1 className="text-lg font-semibold text-[--color-text]">
+        <Card glass className="p-8 text-center">
+          <h1 className="font-display text-lg font-semibold text-[var(--color-text)]">
             Asset not found
           </h1>
-          <p className="mt-1 text-sm text-[--color-text-subtle]">
+          <p className="mt-1 text-sm text-[var(--color-text-subtle)]">
             This QR code does not match any registered asset.
           </p>
         </Card>
@@ -69,7 +70,7 @@ export default function PublicAssetPage() {
   if (!asset)
     return (
       <Shell>
-        <div className="flex justify-center py-20 text-[--color-text-subtle]">
+        <div className="flex justify-center py-20 text-[var(--color-text-subtle)]">
           <Spinner />
         </div>
       </Shell>
@@ -80,16 +81,21 @@ export default function PublicAssetPage() {
   if (submitted)
     return (
       <Shell>
-        <Card className="p-8 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[--color-success-soft] text-[--color-success]">
+        <Card glass className="p-8 text-center">
+          <motion.div
+            initial={{ scale: 0.5, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 380, damping: 20 }}
+            className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-success-soft)] text-[var(--color-success)]"
+          >
             <IconCheck className="h-6 w-6" />
-          </div>
-          <h1 className="mt-4 text-lg font-semibold text-[--color-text]">
+          </motion.div>
+          <h1 className="mt-4 font-display text-lg font-semibold text-[var(--color-text)]">
             Issue reported
           </h1>
-          <p className="mt-1 text-sm text-[--color-text-subtle]">
+          <p className="mt-1 text-sm text-[var(--color-text-subtle)]">
             Your reference number is{" "}
-            <span className="font-mono font-semibold text-[--color-text]">
+            <span className="font-mono font-semibold text-[var(--color-text)]">
               {submitted.number}
             </span>
             . The maintenance team has been notified.
@@ -111,15 +117,18 @@ export default function PublicAssetPage() {
 
   return (
     <Shell>
-      <Reveal>
-      <Card className="overflow-hidden">
-        <div className="border-b border-[--color-border] bg-[--color-surface-muted] px-5 py-4">
-          <div className="flex items-center justify-between gap-3">
+      <Reveal direction="scale">
+      <Card glass className="overflow-hidden !rounded-[var(--radius-editorial)]">
+        <div
+          className="grain relative overflow-hidden px-5 py-5"
+          style={{ background: "var(--gradient-editorial-hero)" }}
+        >
+          <div className="relative flex items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-xs font-semibold text-[--color-primary]">
+              <p className="font-mono text-xs font-semibold text-[var(--color-gold)]">
                 {asset.code}
               </p>
-              <h1 className="mt-0.5 font-display text-lg font-bold text-[--color-text]">
+              <h1 className="mt-0.5 font-display text-xl font-bold text-white">
                 {asset.name}
               </h1>
             </div>
@@ -151,9 +160,9 @@ export default function PublicAssetPage() {
       )}
 
       {asset.recentActivity.length > 0 && (
-        <Reveal delay={0.08}>
-        <Card className="p-5">
-          <h2 className="text-sm font-semibold text-[--color-text]">
+        <Reveal delay={0.08} direction="left">
+        <Card glass className="p-5">
+          <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
             Recent activity
           </h2>
           <ul className="mt-3 space-y-2">
@@ -162,10 +171,10 @@ export default function PublicAssetPage() {
                 key={i}
                 className="flex items-center justify-between text-sm"
               >
-                <span className="text-[--color-text-muted]">
+                <span className="text-[var(--color-text-muted)]">
                   {historyLabel(a.action)}
                 </span>
-                <span className="text-xs text-[--color-text-subtle]">
+                <span className="text-xs text-[var(--color-text-subtle)]">
                   {formatDateShort(a.createdAt)}
                 </span>
               </li>
@@ -175,18 +184,37 @@ export default function PublicAssetPage() {
         </Reveal>
       )}
 
-      {asset.canReportIssue &&
-        (reporting ? (
-          <ReportFlow
-            publicId={publicId}
-            onSubmitted={setSubmitted}
-            onCancel={() => setReporting(false)}
-          />
-        ) : (
-          <Button className="w-full" onClick={() => setReporting(true)}>
-            Report an issue
-          </Button>
-        ))}
+      {asset.canReportIssue && (
+        <AnimatePresence mode="wait">
+          {reporting ? (
+            <motion.div
+              key="flow"
+              initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ReportFlow
+                publicId={publicId}
+                onSubmitted={setSubmitted}
+                onCancel={() => setReporting(false)}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="cta"
+              initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Button className="w-full" onClick={() => setReporting(true)}>
+                Report an issue
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </Shell>
   );
 }
@@ -259,14 +287,14 @@ function ReportFlow({
   }
 
   return (
-    <Card className="space-y-4 p-5">
+    <Card glass className="space-y-4 p-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-[--color-text]">
+        <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
           Report an issue
         </h2>
         <button
           onClick={onCancel}
-          className="text-sm text-[--color-text-subtle] hover:text-[--color-text] cursor-pointer"
+          className="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text)] cursor-pointer"
         >
           Cancel
         </button>
@@ -307,17 +335,24 @@ function ReportFlow({
           </Button>
         </div>
       ) : (
-        <div className="space-y-4 rounded-lg border border-[--color-primary-soft] bg-[--color-primary-soft]/40 p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="space-y-4 rounded-xl border border-[var(--color-primary-soft)] bg-[var(--color-primary-soft)]/40 p-4"
+        >
           <div className="flex items-center gap-2">
-            <IconSparkles className="h-4 w-4 text-[--color-primary]" />
-            <span className="text-sm font-semibold text-[--color-text]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]">
+              <IconSparkles className="h-3.5 w-3.5 text-white" />
+            </span>
+            <span className="font-display text-sm font-semibold text-[var(--color-text)]">
               AI suggestions
             </span>
             <Badge tone={triage.source === "ai" ? "primary" : "neutral"}>
               {triage.source === "ai" ? "AI" : "Fallback"}
             </Badge>
           </div>
-          <p className="text-xs text-[--color-text-subtle]">
+          <p className="text-xs text-[var(--color-text-subtle)]">
             Review and edit before submitting.
           </p>
 
@@ -358,10 +393,10 @@ function ReportFlow({
 
           {triage.possibleCauses.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase text-[--color-text-subtle]">
+              <p className="text-xs font-semibold uppercase text-[var(--color-text-subtle)]">
                 Possible causes
               </p>
-              <ul className="mt-1 list-inside list-disc text-sm text-[--color-text-muted]">
+              <ul className="mt-1 list-inside list-disc text-sm text-[var(--color-text-muted)]">
                 {triage.possibleCauses.map((c, i) => (
                   <li key={i}>{c}</li>
                 ))}
@@ -370,10 +405,10 @@ function ReportFlow({
           )}
           {triage.initialChecks.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase text-[--color-text-subtle]">
+              <p className="text-xs font-semibold uppercase text-[var(--color-text-subtle)]">
                 Safe initial checks
               </p>
-              <ul className="mt-1 list-inside list-disc text-sm text-[--color-text-muted]">
+              <ul className="mt-1 list-inside list-disc text-sm text-[var(--color-text-muted)]">
                 {triage.initialChecks.map((c, i) => (
                   <li key={i}>{c}</li>
                 ))}
@@ -396,7 +431,7 @@ function ReportFlow({
           <Button className="w-full" onClick={submit} loading={submitting}>
             Submit issue
           </Button>
-        </div>
+        </motion.div>
       )}
     </Card>
   );
@@ -404,7 +439,10 @@ function ReportFlow({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[--color-bg] px-4 py-6">
+    <div
+      className="min-h-screen px-4 py-6"
+      style={{ background: "var(--gradient-app)" }}
+    >
       <div className="mx-auto w-full max-w-md space-y-4">
         <div className="flex items-center justify-center py-2">
           <Image
@@ -417,7 +455,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           />
         </div>
         {children}
-        <p className="pt-4 text-center text-xs text-[--color-text-subtle]">
+        <p className="pt-4 text-center text-xs text-[var(--color-text-subtle)]">
           Powered by MaintainIQ · AI-assisted maintenance
         </p>
       </div>
@@ -428,10 +466,10 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-[--color-text-subtle]">
+      <dt className="text-xs uppercase tracking-wide text-[var(--color-text-subtle)]">
         {label}
       </dt>
-      <dd className="mt-0.5 font-medium text-[--color-text]">{value}</dd>
+      <dd className="mt-0.5 font-medium text-[var(--color-text)]">{value}</dd>
     </div>
   );
 }

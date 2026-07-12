@@ -24,25 +24,25 @@ function CallbackHandler() {
   }, [params, loginWithToken, router]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[--color-bg] px-6 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-bg)] px-6 text-center">
       {error ? (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-3"
         >
-          <p className="text-sm font-medium text-[--color-danger]">{error}</p>
+          <p className="text-sm font-medium text-[var(--color-danger)]">{error}</p>
           <a
             href="/login"
-            className="text-sm font-semibold text-[--color-primary] hover:underline"
+            className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
           >
             Back to sign in
           </a>
         </motion.div>
       ) : (
         <>
-          <Spinner className="h-6 w-6 text-[--color-primary]" />
-          <p className="text-sm text-[--color-text-subtle]">Signing you in…</p>
+          <Spinner className="h-6 w-6 text-[var(--color-primary)]" />
+          <p className="text-sm text-[var(--color-text-subtle)]">Signing you in…</p>
         </>
       )}
     </div>

@@ -1,122 +1,138 @@
 @import "tailwindcss";
 
 /*
-  MaintainIQ design system — premium, professional operational SaaS.
-  Off-white content, deep-slate sidebar, indigo primary, semantic status colors.
+  MaintainIQ design system — light premium editorial.
+  Ivory/cream content, deep-navy sidebar, brass/gold accent, serif+sans pairing.
 */
 @theme {
-  --color-bg: #f7f8fa;
-  --color-surface: #ffffff;
-  --color-surface-muted: #f1f5f9;
-  --color-border: #e7ebf0;
-  --color-border-strong: #d3dae2;
+  --color-bg: #f7f3ea;
+  --color-bg-tier-2: #f1ead9;
+  --color-surface: #fffdf8;
+  --color-surface-muted: #efe7d8;
+  --color-border: #e4d9c3;
+  --color-border-strong: #cdbb98;
 
-  --color-text: #0b1220;
-  --color-text-muted: #475569;
-  --color-text-subtle: #6b7893;
+  --color-text: #161c2b;
+  --color-text-muted: #4c5568;
+  --color-text-subtle: #7a8296;
 
-  /* Brand blue (matches MaintainIQ logo) */
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-soft: #eaf1ff;
-  --color-primary-contrast: #ffffff;
+  /* Brass/gold accent — the app's single confident accent color */
+  --color-primary: #8f6425;
+  --color-primary-hover: #6f4d1a;
+  --color-primary-soft: #f4e6c8;
+  --color-primary-contrast: #fffdf8;
+  /* Lighter decorative gold — gradients, glows, illustration, never body text */
+  --color-gold: #c8a25c;
+  --color-gold-soft: #f4e6c8;
 
-  /* Brand green (logo accent) */
+  /* Deep navy — the app's dominant structural ink (sidebar, dark surfaces) */
+  --color-navy: #101a33;
+  --color-navy-soft: #1b2a4d;
+
+  /* Literal MaintainIQ logo colors — decorative/logo use only, not UI chrome */
+  --color-brand-blue: #2563eb;
   --color-brand-green: #22c55e;
   --color-brand-green-soft: #dcfce7;
 
-  /* Secondary accents for richer, professional charts/data viz */
+  /* Secondary accents for charts/data viz (muted teal instead of cool sky-blue) */
   --color-accent: #22c55e;
-  --color-accent-2: #0ea5e9;
+  --color-accent-2: #2b7a78;
   --color-accent-3: #14b8a6;
 
-  /* Premium near-black ink sidebar (logo blends seamlessly) */
-  --color-sidebar: #070b16;
+  /* Premium navy sidebar (gold glow, grain texture applied via .grain) */
+  --color-sidebar: #0a0f1e;
   --color-sidebar-soft: #101728;
-  --color-sidebar-text: #9aa6bf;
-  --color-sidebar-text-strong: #f4f7fb;
+  --color-sidebar-text: #a9adc4;
+  --color-sidebar-text-strong: #f7f3ea;
   --color-sidebar-active: #1b2740;
 
-  /* Semantic / status */
+  /* Semantic / status — hues unchanged (must stay functionally scannable),
+     -soft backgrounds warmed slightly toward the cream base */
   --color-success: #16a34a;
-  --color-success-soft: #dcfce7;
+  --color-success-soft: #e3f3df;
   --color-warning: #d97706;
-  --color-warning-soft: #fef3c7;
+  --color-warning-soft: #fbead0;
   --color-danger: #dc2626;
-  --color-danger-soft: #fee2e2;
+  --color-danger-soft: #fbe4e0;
   --color-info: #0284c7;
-  --color-info-soft: #e0f2fe;
-  --color-neutral: #64748b;
-  --color-neutral-soft: #eef1f5;
+  --color-info-soft: #e2eef4;
+  --color-neutral: #6b6455;
+  --color-neutral-soft: #ece4d3;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
 
   --radius-card: 0.875rem;
+  --radius-editorial: 1.25rem;
 
-  /* Layered, diffuse shadows */
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 20px -6px rgb(15 23 42 / 0.08);
-  --shadow-lift: 0 2px 6px rgb(15 23 42 / 0.06), 0 16px 40px -12px rgb(15 23 42 / 0.18);
-  --shadow-pop: 0 10px 40px -10px rgb(15 23 42 / 0.28);
+  /* Layered, diffuse shadows — warm navy tint instead of cool slate */
+  --shadow-card: 0 1px 2px rgb(16 26 51 / 0.05), 0 4px 20px -6px rgb(16 26 51 / 0.10);
+  --shadow-lift: 0 2px 6px rgb(16 26 51 / 0.08), 0 16px 40px -12px rgb(16 26 51 / 0.20);
+  --shadow-pop: 0 10px 40px -10px rgb(16 26 51 / 0.32);
 
   /* Subtle brand gradients (accents only, never on body text) */
-  --gradient-brand: linear-gradient(140deg, #1d4ed8 0%, #2563eb 52%, #22c55e 130%);
+  --gradient-brand: linear-gradient(140deg, #101a33 0%, #1b2a4d 48%, #8f6425 130%);
   --gradient-sheen: linear-gradient(135deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0));
-  /* Premium sidebar backdrop — deep ink with faint blue/green brand glow */
-  --gradient-sidebar: radial-gradient(600px 320px at 20% -8%, rgb(37 99 235 / 0.20) 0%, transparent 60%),
-    radial-gradient(520px 300px at 90% 108%, rgb(34 197 94 / 0.14) 0%, transparent 62%),
-    linear-gradient(180deg, #090d1a 0%, #070b16 100%);
-  /* Soft, professional app backdrop for glassmorphism */
-  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #e4edfd 0%, transparent 55%),
-    radial-gradient(1000px 500px at 100% 0%, #e2f5ec 0%, transparent 50%),
-    linear-gradient(180deg, #f4f7fc 0%, #f6f8fb 100%);
-  /* Dark highlight card (professional accent stat card) */
-  --gradient-dark-card: linear-gradient(150deg, #0b1e3f 0%, #123a7a 48%, #0f5c3c 130%);
-  /* Rich mesh backdrop for the auth brand panel — deep indigo-to-teal, more alive than flat ink */
-  --gradient-auth-panel: radial-gradient(900px 620px at 12% -6%, rgb(37 99 235 / 0.38) 0%, transparent 58%),
-    radial-gradient(760px 640px at 100% 108%, rgb(34 197 94 / 0.26) 0%, transparent 58%),
-    radial-gradient(520px 460px at 78% 18%, rgb(124 58 237 / 0.18) 0%, transparent 60%),
-    linear-gradient(165deg, #0a1120 0%, #0d1a35 48%, #0a1f22 100%);
+  /* Premium sidebar backdrop — deep navy with brass/gold glow */
+  --gradient-sidebar: radial-gradient(600px 320px at 20% -8%, rgb(200 162 92 / 0.22) 0%, transparent 60%),
+    radial-gradient(520px 300px at 90% 108%, rgb(200 162 92 / 0.12) 0%, transparent 62%),
+    linear-gradient(180deg, #0d1526 0%, #0a0f1e 100%);
+  /* Soft, editorial app backdrop for glassmorphism — ivory mesh */
+  --gradient-app: radial-gradient(1200px 600px at 15% -10%, rgb(200 162 92 / 0.12) 0%, transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, rgb(16 26 51 / 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #f8f4ea 0%, #f7f3ea 100%);
+  /* Dark highlight card (deliberate navy/gold accent tile) */
+  --gradient-dark-card: linear-gradient(150deg, #0d1626 0%, #1b2a4d 48%, #8f6425 130%);
+  /* Generalized "editorial hero" mesh — navy+gold, reserved for ~3 feature
+     surfaces app-wide (auth panel, AI triage card, command palette) so it
+     stays a deliberate moment rather than wallpaper. Pair with .grain. */
+  --gradient-editorial-hero: radial-gradient(900px 620px at 12% -6%, rgb(200 162 92 / 0.35) 0%, transparent 58%),
+    radial-gradient(760px 640px at 100% 108%, rgb(200 162 92 / 0.18) 0%, transparent 58%),
+    radial-gradient(520px 460px at 78% 18%, rgb(27 42 77 / 0.4) 0%, transparent 60%),
+    linear-gradient(165deg, #0a0f1e 0%, #101a33 48%, #0d1626 100%);
 }
 
 /* ---- Dark theme overrides (applied via data-theme="dark" on <html>) ---- */
 :root[data-theme="dark"] {
-  --color-bg: #0a0f1c;
-  --color-surface: #121a2b;
-  --color-surface-muted: #1a2334;
-  --color-border: #263149;
-  --color-border-strong: #35425e;
+  --color-bg: #0a0e1a;
+  --color-bg-tier-2: #0d1220;
+  --color-surface: #141b2c;
+  --color-surface-muted: #1c2438;
+  --color-border: #2a3550;
+  --color-border-strong: #3a4768;
 
-  --color-text: #e9eef7;
-  --color-text-muted: #a6b2c8;
-  --color-text-subtle: #7e8ba4;
+  --color-text: #f2ece0;
+  --color-text-muted: #b8bccb;
+  --color-text-subtle: #838a9e;
 
-  --color-primary: #60a5fa;
-  --color-primary-hover: #93c5fd;
-  --color-primary-soft: #16263f;
-  --color-primary-contrast: #0a0f1c;
+  --color-primary: #c9a35f;
+  --color-primary-hover: #d9b878;
+  --color-primary-soft: #2a2313;
+  --color-primary-contrast: #0a0e1a;
+  --color-gold: #d9b878;
+  --color-gold-soft: #2a2313;
 
-  --color-success-soft: #10251a;
-  --color-warning-soft: #2a1f0c;
-  --color-danger-soft: #2a1414;
-  --color-info-soft: #0c2233;
-  --color-neutral-soft: #1a2334;
+  --color-success-soft: #142a1c;
+  --color-warning-soft: #2c2211;
+  --color-danger-soft: #2c1717;
+  --color-info-soft: #10222c;
+  --color-neutral-soft: #1c2438;
 
-  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #141d33 0%, transparent 55%),
-    radial-gradient(1000px 500px at 100% 0%, #10233a 0%, transparent 50%),
-    linear-gradient(180deg, #0a0f1c 0%, #0b1120 100%);
+  --gradient-app: radial-gradient(1200px 600px at 15% -10%, rgb(201 163 95 / 0.10) 0%, transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, rgb(27 42 77 / 0.35) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0e1a 0%, #0b1120 100%);
 
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 30px -10px rgb(0 0 0 / 0.5);
   --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.4), 0 20px 50px -14px rgb(0 0 0 / 0.6);
 }
 
 :root[data-theme="dark"] .glass {
-  background: rgba(18, 26, 43, 0.72);
+  background: rgba(20, 27, 44, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 40px -14px rgb(0 0 0 / 0.5);
 }
 :root[data-theme="dark"] .skeleton {
-  background: linear-gradient(90deg, #1a2334 25%, #222d43 37%, #1a2334 63%);
+  background: linear-gradient(90deg, #1c2438 25%, #262f47 37%, #1c2438 63%);
   background-size: 800px 100%;
 }
 
@@ -139,7 +155,7 @@ body {
 
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -176,17 +192,17 @@ h1, h2, h3, h4, .font-display {
 
 /* Frosted glass surface — high opacity for readability (per taste rules) */
 .glass {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 40px -14px rgb(30 41 99 / 0.18);
+  background: rgba(255, 253, 248, 0.74);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid rgba(255, 253, 248, 0.7);
+  box-shadow: 0 1px 2px rgb(16 26 51 / 0.05), 0 12px 40px -14px rgb(16 26 51 / 0.2);
 }
 .glass-strong {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px) saturate(1.5);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 253, 248, 0.87);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 253, 248, 0.82);
 }
 
 /* Shimmer for skeleton loading states */
@@ -198,7 +214,7 @@ h1, h2, h3, h4, .font-display {
   background: linear-gradient(
     90deg,
     var(--color-surface-muted) 25%,
-    #e9edf3 37%,
+    #e6dcc4 37%,
     var(--color-surface-muted) 63%
   );
   background-size: 800px 100%;
@@ -218,7 +234,7 @@ h1, h2, h3, h4, .font-display {
 }
 .animate-floaty-slow { animation: floaty-slow 11s ease-in-out infinite; }
 
-/* Fine film-grain texture for premium dark panels */
+/* Fine film-grain texture for premium dark/editorial panels */
 .grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 120px 120px;

@@ -43,20 +43,20 @@ export default function ForgotPasswordPage() {
             key="sent"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl bg-[--color-success-soft] p-5 text-center"
+            className="rounded-xl bg-[var(--color-success-soft)] p-5 text-center"
           >
             <motion.div
               initial={{ scale: 0.4, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 380, damping: 20 }}
-              className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[--color-success]"
+              className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[var(--color-success)]"
             >
               <IconCheck className="h-5 w-5 text-white" />
             </motion.div>
-            <p className="mt-3 text-sm font-semibold text-[--color-text]">
+            <p className="mt-3 text-sm font-semibold text-[var(--color-text)]">
               Check your inbox
             </p>
-            <p className="mt-1 text-sm text-[--color-text-subtle]">
+            <p className="mt-1 text-sm text-[var(--color-text-subtle)]">
               If an account exists for <b>{email}</b>, a reset link is on its
               way. The link expires in 30 minutes.
             </p>
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
           >
             {error && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
-                <p className="rounded-lg bg-[--color-danger-soft] px-4 py-3 text-sm font-medium text-[--color-danger]">
+                <p className="rounded-lg bg-[var(--color-danger-soft)] px-4 py-3 text-sm font-medium text-[var(--color-danger)]">
                   {error}
                 </p>
               </motion.div>
@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-200 hover:enabled:bg-[--color-primary-hover] disabled:cursor-not-allowed disabled:opacity-70"
+              className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-200 hover:enabled:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-70"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
               {status === "loading" ? (
@@ -109,9 +109,9 @@ export default function ForgotPasswordPage() {
         )}
       </AnimatePresence>
 
-      <p className="mt-6 text-center text-sm text-[--color-text-subtle]">
+      <p className="mt-6 text-center text-sm text-[var(--color-text-subtle)]">
         Remembered your password?{" "}
-        <Link href="/login" className="font-semibold text-[--color-primary] hover:underline">
+        <Link href="/login" className="font-semibold text-[var(--color-primary)] hover:underline">
           Sign in
         </Link>
       </p>

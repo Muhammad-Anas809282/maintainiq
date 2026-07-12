@@ -46,7 +46,7 @@ function ResetPasswordForm() {
   return (
     <AuthShell heading="Set a new password" subheading="Choose a strong password for your account">
       {!token ? (
-        <p className="rounded-lg bg-[--color-danger-soft] px-4 py-3 text-sm font-medium text-[--color-danger]">
+        <p className="rounded-lg bg-[var(--color-danger-soft)] px-4 py-3 text-sm font-medium text-[var(--color-danger)]">
           This reset link is invalid or missing. Please request a new one.
         </p>
       ) : (
@@ -54,7 +54,7 @@ function ResetPasswordForm() {
           <AnimatePresence>
             {error && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
-                <p className="rounded-lg bg-[--color-danger-soft] px-4 py-3 text-sm font-medium text-[--color-danger]">
+                <p className="rounded-lg bg-[var(--color-danger-soft)] px-4 py-3 text-sm font-medium text-[var(--color-danger)]">
                   {error}
                 </p>
               </motion.div>
@@ -82,7 +82,7 @@ function ResetPasswordForm() {
           <button
             type="submit"
             disabled={status !== "idle"}
-            className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-300 hover:enabled:bg-[--color-primary-hover] disabled:cursor-not-allowed disabled:opacity-100"
+            className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-300 hover:enabled:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-100"
             style={{ backgroundColor: status === "success" ? "#16a34a" : "var(--color-primary)" }}
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -116,8 +116,8 @@ function ResetPasswordForm() {
         </form>
       )}
 
-      <p className="mt-6 text-center text-sm text-[--color-text-subtle]">
-        <Link href="/login" className="font-semibold text-[--color-primary] hover:underline">
+      <p className="mt-6 text-center text-sm text-[var(--color-text-subtle)]">
+        <Link href="/login" className="font-semibold text-[var(--color-primary)] hover:underline">
           Back to sign in
         </Link>
       </p>

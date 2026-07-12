@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import type { ComponentProps, ReactNode } from "react";
+import { hoverSpring } from "@/components/motion";
 
 type Tone = "success" | "warning" | "danger" | "info" | "neutral" | "primary";
 
 const toneClasses: Record<Tone, string> = {
-  success: "bg-[--color-success-soft] text-[--color-success]",
-  warning: "bg-[--color-warning-soft] text-[--color-warning]",
-  danger: "bg-[--color-danger-soft] text-[--color-danger]",
-  info: "bg-[--color-info-soft] text-[--color-info]",
-  neutral: "bg-[--color-neutral-soft] text-[--color-text-muted]",
-  primary: "bg-[--color-primary-soft] text-[--color-primary]",
+  success: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+  warning: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+  danger: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
+  info: "bg-[var(--color-info-soft)] text-[var(--color-info)]",
+  neutral: "bg-[var(--color-neutral-soft)] text-[var(--color-text-muted)]",
+  primary: "bg-[var(--color-primary-soft)] text-[var(--color-primary)]",
 };
 
 export function Badge({
@@ -40,38 +41,61 @@ export function Card({
   className = "",
   hover = false,
   glass = false,
+  tone = "default",
 }: {
   children: ReactNode;
   className?: string;
   hover?: boolean;
   glass?: boolean;
+  /** "editorial" = navy/gold gradient hero surface — reserve for a handful of feature moments, not every card. */
+  tone?: "default" | "glass" | "editorial";
 }) {
-  const base = glass
-    ? "glass rounded-[--radius-card]"
-    : "rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] shadow-[--shadow-card]";
+  const resolvedTone = glass ? "glass" : tone;
+  const base =
+    resolvedTone === "editorial"
+      ? "grain relative overflow-hidden rounded-[var(--radius-editorial)] text-white shadow-[var(--shadow-pop)]"
+      : resolvedTone === "glass"
+        ? "glass rounded-[var(--radius-card)]"
+        : "rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]";
+  const editorialBg =
+    resolvedTone === "editorial" ? { background: "var(--gradient-editorial-hero)" } : undefined;
+
   if (hover) {
     return (
       <motion.div
         whileHover={{ y: -4 }}
-        transition={{ type: "spring", stiffness: 300, damping: 24 }}
-        className={`${base} transition-shadow duration-200 hover:shadow-[--shadow-lift] ${className}`}
+        transition={hoverSpring}
+        style={editorialBg}
+        className={`${base} transition-shadow duration-200 hover:shadow-[var(--shadow-lift)] ${className}`}
       >
         {children}
       </motion.div>
     );
   }
-  return <div className={`${base} ${className}`}>{children}</div>;
+  return (
+    <div style={editorialBg} className={`${base} ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
-    "bg-[--color-primary] text-[--color-primary-contrast] hover:bg-[--color-primary-hover] shadow-[0_6px_18px_-6px_rgb(37_99_235/0.5)]",
+    "bg-[var(--color-primary)] text-[var(--color-primary-contrast)] hover:bg-[var(--color-primary-hover)] shadow-[0_6px_18px_-6px_rgb(143_100_37/0.5)]",
   secondary:
-    "bg-[--color-surface] text-[--color-text] border border-[--color-border-strong] hover:bg-[--color-surface-muted]",
-  danger: "bg-[--color-danger] text-white hover:opacity-90",
-  ghost: "text-[--color-text-muted] hover:bg-[--color-surface-muted]",
+    "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border-strong)] hover:bg-[var(--color-surface-muted)]",
+  // Outlined, not filled — destructive weight belongs on the confirmation
+  // step (the native confirm() dialog), not the trigger button itself.
+  danger:
+    "border bg-[var(--color-surface)] hover:bg-[var(--color-danger-soft)] disabled:opacity-60",
+  ghost: "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)]",
 };
+
+// Explicit inline fallback for the danger variant's border/text color — a
+// belt-and-suspenders guard against any arbitrary-value CSS-var edge case,
+// same pattern used to harden the auth buttons earlier in this project.
+const dangerStyle = { borderColor: "#dc2626", color: "#dc2626" } as const;
 
 export function Button({
   variant = "primary",
@@ -90,8 +114,12 @@ export function Button({
       transition={{ type: "spring", stiffness: 400, damping: 22 }}
       {...(props as ComponentProps<typeof motion.button>)}
       disabled={disabled || loading}
-      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${buttonVariants[variant]} ${className}`}
+      style={variant === "danger" ? dangerStyle : undefined}
+      className={`group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${buttonVariants[variant]} ${className}`}
     >
+      {variant === "primary" && (
+        <span className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+      )}
       {loading && <Spinner className="h-4 w-4" />}
       {children}
     </motion.button>
@@ -112,8 +140,11 @@ export function LinkButton({
   return (
     <Link
       href={href}
-      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 ${buttonVariants[variant]} ${className}`}
+      className={`group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-200 ${buttonVariants[variant]} ${className}`}
     >
+      {variant === "primary" && (
+        <span className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+      )}
       {children}
     </Link>
   );
@@ -163,18 +194,18 @@ export function Field({
     <div className="space-y-1.5">
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-medium text-[--color-text]"
+        className="block text-sm font-medium text-[var(--color-text)]"
       >
         {label}
       </label>
       {children}
-      {hint && <p className="text-xs text-[--color-text-subtle]">{hint}</p>}
+      {hint && <p className="text-xs text-[var(--color-text-subtle)]">{hint}</p>}
     </div>
   );
 }
 
 const inputBase =
-  "w-full rounded-lg border border-[--color-border-strong] bg-[--color-surface] px-3.5 py-2.5 text-sm text-[--color-text] placeholder:text-[--color-text-subtle] focus:border-[--color-primary] focus:outline-none focus:ring-4 focus:ring-[--color-primary-soft] transition-colors";
+  "w-full rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3.5 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-4 focus:ring-[var(--color-primary-soft)] transition-colors";
 
 export function Input(props: ComponentProps<"input">) {
   return <input {...props} className={`${inputBase} ${props.className ?? ""}`} />;
@@ -197,7 +228,7 @@ export function Select(props: ComponentProps<"select">) {
         className={`${inputBase} cursor-pointer appearance-none pr-10 ${props.className ?? ""}`}
       />
       <svg
-        className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[--color-text-subtle]"
+        className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-subtle)]"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -219,10 +250,10 @@ export function Alert({
   children: ReactNode;
 }) {
   const map = {
-    danger: "bg-[--color-danger-soft] text-[--color-danger]",
-    success: "bg-[--color-success-soft] text-[--color-success]",
-    info: "bg-[--color-info-soft] text-[--color-info]",
-    warning: "bg-[--color-warning-soft] text-[--color-warning]",
+    danger: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
+    success: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+    info: "bg-[var(--color-info-soft)] text-[var(--color-info)]",
+    warning: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
   };
   return (
     <motion.div
@@ -245,8 +276,8 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[--radius-card] border border-dashed border-[--color-border-strong] bg-[--color-surface] px-6 py-16 text-center">
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[--color-surface-muted]">
+    <div className="flex flex-col items-center justify-center rounded-[var(--radius-card)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-surface)] px-6 py-16 text-center">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-surface-muted)]">
         <svg
           width="26"
           height="26"
@@ -261,11 +292,11 @@ export function EmptyState({
           <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
         </svg>
       </div>
-      <h3 className="font-display text-base font-semibold text-[--color-text]">
+      <h3 className="font-display text-base font-semibold text-[var(--color-text)]">
         {title}
       </h3>
       {description && (
-        <p className="mt-1 max-w-sm text-sm text-[--color-text-subtle]">
+        <p className="mt-1 max-w-sm text-sm text-[var(--color-text-subtle)]">
           {description}
         </p>
       )}

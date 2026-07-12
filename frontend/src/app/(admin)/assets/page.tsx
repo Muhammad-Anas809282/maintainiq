@@ -73,10 +73,10 @@ export default function AssetsPage() {
     <div className="space-y-6">
       <Reveal className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
             Assets
           </h1>
-          <p className="mt-1.5 text-sm text-[--color-text-subtle]">
+          <p className="mt-1.5 text-sm text-[var(--color-text-subtle)]">
             {data ? `${data.meta.total} total` : "Loading…"}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function AssetsPage() {
 
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-56">
-          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[--color-text-subtle]" />
+          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-subtle)]" />
           <Input
             placeholder="Search by name, code, location…"
             value={search}
@@ -124,20 +124,20 @@ export default function AssetsPage() {
       ) : (
         <Reveal>
         {isAdmin && selected.size > 0 && (
-          <div className="mb-3 flex items-center justify-between rounded-xl border border-[--color-primary] bg-[--color-primary-soft] px-4 py-2.5">
-            <span className="text-sm font-medium text-[--color-primary]">
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-[var(--color-primary)] bg-[var(--color-primary-soft)] px-4 py-2.5">
+            <span className="text-sm font-medium text-[var(--color-primary)]">
               {selected.size} selected
             </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelected(new Set())}
-                className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-[--color-text-muted] hover:bg-white/50"
+                className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-text-muted)] hover:bg-white/50"
               >
                 Clear
               </button>
               <button
                 onClick={printLabels}
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[--color-primary] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[--color-primary-hover]"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
                 <IconQr className="h-4 w-4" />
                 Print QR labels
@@ -148,7 +148,7 @@ export default function AssetsPage() {
         <Card glass className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-[--color-border] bg-[--color-surface-muted] text-xs uppercase tracking-wide text-[--color-text-subtle]">
+              <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface-muted)] text-xs uppercase tracking-wide text-[var(--color-text-subtle)]">
                 <tr>
                   {isAdmin && <th className="w-10 px-4 py-3" />}
                   <th className="px-4 py-3 font-semibold">Code</th>
@@ -159,7 +159,7 @@ export default function AssetsPage() {
                   <th className="px-4 py-3 font-semibold">Next Service</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[--color-border]">
+              <tbody className="divide-y divide-[var(--color-border)]">
                 {data?.data.map((asset, i) => (
                   <motion.tr
                     key={asset.id}
@@ -167,7 +167,7 @@ export default function AssetsPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.25 }}
                     onClick={() => router.push(`/assets/${asset.id}`)}
-                    className="cursor-pointer border-l-2 border-l-transparent transition-colors hover:border-l-[--color-primary] hover:bg-[--color-surface-muted]"
+                    className="cursor-pointer border-l-2 border-l-transparent transition-colors hover:border-l-[var(--color-primary)] hover:bg-[var(--color-surface-muted)]"
                   >
                     {isAdmin && (
                       <td
@@ -179,20 +179,20 @@ export default function AssetsPage() {
                           checked={selected.has(asset.id)}
                           onChange={() => toggle(asset.id)}
                           aria-label={`Select ${asset.code}`}
-                          className="h-4 w-4 cursor-pointer accent-[--color-primary]"
+                          className="h-4 w-4 cursor-pointer accent-[var(--color-primary)]"
                         />
                       </td>
                     )}
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold text-[--color-primary]">
+                    <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold text-[var(--color-primary)]">
                       {asset.code}
                     </td>
-                    <td className="px-4 py-3 font-medium text-[--color-text]">
+                    <td className="px-4 py-3 font-medium text-[var(--color-text)]">
                       {asset.name}
                     </td>
-                    <td className="px-4 py-3 text-[--color-text-muted]">
+                    <td className="px-4 py-3 text-[var(--color-text-muted)]">
                       {asset.category}
                     </td>
-                    <td className="px-4 py-3 text-[--color-text-muted]">
+                    <td className="px-4 py-3 text-[var(--color-text-muted)]">
                       {asset.location}
                     </td>
                     <td className="px-4 py-3">
@@ -200,7 +200,7 @@ export default function AssetsPage() {
                         {assetStatusMeta[asset.status].label}
                       </Badge>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-[--color-text-muted]">
+                    <td className="whitespace-nowrap px-4 py-3 text-[var(--color-text-muted)]">
                       {formatDateShort(asset.nextServiceDate)}
                     </td>
                   </motion.tr>

@@ -56,10 +56,10 @@ export default function IssuesPage() {
   return (
     <div className="space-y-6">
       <Reveal>
-        <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
+        <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
           Issues
         </h1>
-        <p className="mt-1.5 text-sm text-[--color-text-subtle]">
+        <p className="mt-1.5 text-sm text-[var(--color-text-subtle)]">
           {data ? `${data.meta.total} total` : "Loading…"}
         </p>
       </Reveal>
@@ -113,21 +113,21 @@ export default function IssuesPage() {
               >
                 <button
                   onClick={() => router.push(`/issues/${issue.id}`)}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-[--color-surface-muted] cursor-pointer"
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-[var(--color-surface-muted)] cursor-pointer"
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-semibold text-[--color-primary]">
+                      <span className="font-mono text-xs font-semibold text-[var(--color-primary)]">
                         {issue.number}
                       </span>
                       {issue.priority === "CRITICAL" && (
                         <Badge tone="danger">Critical</Badge>
                       )}
                     </div>
-                    <p className="mt-0.5 truncate text-sm font-medium text-[--color-text]">
+                    <p className="mt-0.5 truncate text-sm font-medium text-[var(--color-text)]">
                       {issue.title}
                     </p>
-                    <p className="text-xs text-[--color-text-subtle]">
+                    <p className="text-xs text-[var(--color-text-subtle)]">
                       {issue.asset
                         ? `${issue.asset.code} — ${issue.asset.name} · `
                         : ""}

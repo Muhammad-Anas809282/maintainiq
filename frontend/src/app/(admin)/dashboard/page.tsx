@@ -10,7 +10,13 @@ import type {
   IssuePriority,
 } from "@/lib/types";
 import { Card, Badge, Skeleton } from "@/components/ui";
-import { Reveal, Stagger, AnimatedNumber, motion } from "@/components/motion";
+import {
+  Reveal,
+  Stagger,
+  AnimatedNumber,
+  ParallaxLayer,
+  motion,
+} from "@/components/motion";
 import {
   DonutChart,
   BarChart,
@@ -47,7 +53,7 @@ function StatTile({
             className="h-2 w-2 rounded-full"
             style={{ background: accent ?? "var(--color-primary)" }}
           />
-          <p className="text-xs font-semibold uppercase tracking-wide text-[--color-text-subtle]">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
             {label}
           </p>
         </div>
@@ -57,7 +63,7 @@ function StatTile({
         >
           <AnimatedNumber value={value} />
           {suffix && (
-            <span className="ml-1 text-lg text-[--color-text-subtle]">
+            <span className="ml-1 text-lg text-[var(--color-text-subtle)]">
               {suffix}
             </span>
           )}
@@ -79,7 +85,7 @@ export default function DashboardPage() {
 
   if (error)
     return (
-      <p className="text-sm text-[--color-danger]">Failed to load: {error}</p>
+      <p className="text-sm text-[var(--color-danger)]">Failed to load: {error}</p>
     );
 
   if (!data)
@@ -126,13 +132,20 @@ export default function DashboardPage() {
   const trendTotal = data.trends.reduce((s, d) => s + d.count, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
+      <ParallaxLayer
+        speed={0.25}
+        className="pointer-events-none absolute -right-10 -top-16 -z-10 h-64 w-64 rounded-full opacity-[0.35] blur-[100px]"
+      >
+        <div className="h-full w-full rounded-full" style={{ background: "var(--color-gold)" }} />
+      </ParallaxLayer>
+
       <Reveal className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
             Dashboard
           </h1>
-          <p className="mt-1.5 text-sm text-[--color-text-subtle]">
+          <p className="mt-1.5 text-sm text-[var(--color-text-subtle)]">
             Operational overview of assets and maintenance issues.
           </p>
         </div>
@@ -166,20 +179,20 @@ export default function DashboardPage() {
 
       {/* Trend + dark highlight card */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <Reveal className="lg:col-span-2">
+        <Reveal direction="left" className="lg:col-span-2">
           <Card glass className="h-full p-6">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-base font-semibold text-[--color-text]">
+              <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
                 Issues reported
               </h2>
-              <span className="text-xs font-medium text-[--color-text-subtle]">
+              <span className="text-xs font-medium text-[var(--color-text-subtle)]">
                 Last 14 days · {trendTotal} total
               </span>
             </div>
             <div className="mt-4">
               <AreaChart data={data.trends} tone="primary" />
             </div>
-            <div className="mt-1 flex justify-between text-[10px] text-[--color-text-subtle]">
+            <div className="mt-1 flex justify-between text-[10px] text-[var(--color-text-subtle)]">
               <span>{formatDayLabel(data.trends[0]?.date)}</span>
               <span>
                 {formatDayLabel(data.trends[data.trends.length - 1]?.date)}
@@ -188,9 +201,9 @@ export default function DashboardPage() {
           </Card>
         </Reveal>
 
-        <Reveal delay={0.05}>
+        <Reveal direction="right" delay={0.05}>
           <div
-            className="relative flex h-full flex-col justify-between overflow-hidden rounded-[--radius-card] p-6 text-white"
+            className="grain relative flex h-full flex-col justify-between overflow-hidden rounded-[var(--radius-editorial)] p-6 text-white"
             style={{ background: "var(--gradient-dark-card)" }}
           >
             <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
@@ -223,9 +236,9 @@ export default function DashboardPage() {
 
       {/* Distribution row */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <Reveal>
+        <Reveal direction="left">
           <Card glass className="h-full p-6">
-            <h2 className="font-display text-base font-semibold text-[--color-text]">
+            <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
               Assets by status
             </h2>
             <div className="mt-6">
@@ -238,7 +251,7 @@ export default function DashboardPage() {
           </Card>
         </Reveal>
 
-        <Reveal delay={0.05}>
+        <Reveal direction="scale" delay={0.05}>
           <Card glass className="flex h-full flex-wrap items-center justify-around gap-4 p-6">
             <GaugeChart
               value={data.rates.operationalRate}
@@ -253,9 +266,9 @@ export default function DashboardPage() {
           </Card>
         </Reveal>
 
-        <Reveal delay={0.1}>
+        <Reveal direction="right" delay={0.1}>
           <Card glass className="h-full p-6">
-            <h2 className="font-display text-base font-semibold text-[--color-text]">
+            <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
               Issues by priority
             </h2>
             <div className="mt-6">
@@ -269,7 +282,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Reveal>
           <Card glass className="h-full p-6">
-            <h2 className="font-display text-base font-semibold text-[--color-text]">
+            <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
               Assets by category
             </h2>
             <div className="mt-6">
@@ -281,12 +294,12 @@ export default function DashboardPage() {
         <Reveal delay={0.05}>
           <Card glass className="overflow-hidden">
             <div className="border-b border-white/50 px-6 py-4">
-              <h2 className="font-display text-base font-semibold text-[--color-text]">
+              <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
                 Needs attention
               </h2>
             </div>
             {data.attentionAssets.length === 0 ? (
-              <p className="px-6 py-10 text-center text-sm text-[--color-text-subtle]">
+              <p className="px-6 py-10 text-center text-sm text-[var(--color-text-subtle)]">
                 All assets operational.
               </p>
             ) : (
@@ -303,10 +316,10 @@ export default function DashboardPage() {
                       className="flex items-center justify-between gap-3 px-6 py-3 transition-colors hover:bg-white/40"
                     >
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-[--color-text]">
+                        <p className="truncate text-sm font-semibold text-[var(--color-text)]">
                           {a.name}
                         </p>
-                        <p className="text-xs text-[--color-text-subtle]">
+                        <p className="text-xs text-[var(--color-text-subtle)]">
                           {a.code} · {a.location}
                         </p>
                       </div>
@@ -326,18 +339,18 @@ export default function DashboardPage() {
       <Reveal>
         <Card glass className="overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/50 px-6 py-4">
-            <h2 className="font-display text-base font-semibold text-[--color-text]">
+            <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
               Recent issues
             </h2>
             <Link
               href="/issues"
-              className="text-sm font-medium text-[--color-primary] hover:underline"
+              className="text-sm font-medium text-[var(--color-primary)] hover:underline"
             >
               View all
             </Link>
           </div>
           {data.recentIssues.length === 0 ? (
-            <p className="px-6 py-10 text-center text-sm text-[--color-text-subtle]">
+            <p className="px-6 py-10 text-center text-sm text-[var(--color-text-subtle)]">
               No issues reported yet.
             </p>
           ) : (
@@ -351,10 +364,10 @@ export default function DashboardPage() {
                 >
                   <div className="flex cursor-default items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-white/40">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[--color-text]">
+                      <p className="truncate text-sm font-semibold text-[var(--color-text)]">
                         {issue.title}
                       </p>
-                      <p className="mt-0.5 text-xs text-[--color-text-subtle]">
+                      <p className="mt-0.5 text-xs text-[var(--color-text-subtle)]">
                         {issue.number} · {issue.asset.code} — {issue.asset.name} ·{" "}
                         {formatDate(issue.createdAt)}
                       </p>

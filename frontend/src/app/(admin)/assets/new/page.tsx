@@ -6,6 +6,7 @@ import Link from "next/link";
 import { api, ApiError } from "@/lib/api";
 import type { Asset } from "@/lib/types";
 import { Card, Field, Input, Textarea, Button, Alert } from "@/components/ui";
+import { Reveal, Stagger, scaleIn, fadeUp, motion } from "@/components/motion";
 
 export default function NewAssetPage() {
   const router = useRouter();
@@ -49,97 +50,105 @@ export default function NewAssetPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
+      <Reveal>
         <Link
           href="/assets"
-          className="text-sm font-medium text-[--color-primary] hover:underline"
+          className="text-sm font-medium text-[var(--color-primary)] hover:underline"
         >
           ← Back to assets
         </Link>
-        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[--color-text]">
+        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
           Register Asset
         </h1>
-        <p className="mt-1 text-sm text-[--color-text-subtle]">
+        <p className="mt-1 text-sm text-[var(--color-text-subtle)]">
           A unique asset code and QR code are generated automatically.
         </p>
-      </div>
+      </Reveal>
 
-      <Card className="p-6">
+      <Reveal direction="scale" delay={0.05}>
+      <Card glass className="!rounded-[var(--radius-editorial)] p-6">
         <form onSubmit={onSubmit} className="space-y-4">
           {error && <Alert>{error}</Alert>}
-          <Field label="Asset name" htmlFor="name">
-            <Input
-              id="name"
-              value={form.name}
-              onChange={(e) => set("name", e.target.value)}
-              placeholder="e.g. Classroom Projector 01"
-              required
-            />
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Category" htmlFor="category">
-              <Input
-                id="category"
-                value={form.category}
-                onChange={(e) => set("category", e.target.value)}
-                placeholder="e.g. Projector"
-                required
-              />
-            </Field>
-            <Field label="Location" htmlFor="location">
-              <Input
-                id="location"
-                value={form.location}
-                onChange={(e) => set("location", e.target.value)}
-                placeholder="e.g. Room A-101"
-                required
-              />
-            </Field>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Condition" htmlFor="condition" hint="Optional">
-              <Input
-                id="condition"
-                value={form.condition}
-                onChange={(e) => set("condition", e.target.value)}
-                placeholder="e.g. Good"
-              />
-            </Field>
-            <Field
-              label="Next service date"
-              htmlFor="nextServiceDate"
-              hint="Optional"
-            >
-              <Input
-                id="nextServiceDate"
-                type="date"
-                value={form.nextServiceDate}
-                onChange={(e) => set("nextServiceDate", e.target.value)}
-              />
-            </Field>
-          </div>
-          <Field label="Description" htmlFor="description" hint="Optional">
-            <Textarea
-              id="description"
-              value={form.description}
-              onChange={(e) => set("description", e.target.value)}
-              placeholder="Any additional details about the asset"
-            />
-          </Field>
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" loading={loading}>
-              Create asset
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => router.push("/assets")}
-            >
-              Cancel
-            </Button>
-          </div>
+          <Stagger className="space-y-4">
+            <motion.div variants={fadeUp}>
+              <Field label="Asset name" htmlFor="name">
+                <Input
+                  id="name"
+                  value={form.name}
+                  onChange={(e) => set("name", e.target.value)}
+                  placeholder="e.g. Classroom Projector 01"
+                  required
+                />
+              </Field>
+            </motion.div>
+            <motion.div variants={fadeUp} className="grid gap-4 sm:grid-cols-2">
+              <Field label="Category" htmlFor="category">
+                <Input
+                  id="category"
+                  value={form.category}
+                  onChange={(e) => set("category", e.target.value)}
+                  placeholder="e.g. Projector"
+                  required
+                />
+              </Field>
+              <Field label="Location" htmlFor="location">
+                <Input
+                  id="location"
+                  value={form.location}
+                  onChange={(e) => set("location", e.target.value)}
+                  placeholder="e.g. Room A-101"
+                  required
+                />
+              </Field>
+            </motion.div>
+            <motion.div variants={fadeUp} className="grid gap-4 sm:grid-cols-2">
+              <Field label="Condition" htmlFor="condition" hint="Optional">
+                <Input
+                  id="condition"
+                  value={form.condition}
+                  onChange={(e) => set("condition", e.target.value)}
+                  placeholder="e.g. Good"
+                />
+              </Field>
+              <Field
+                label="Next service date"
+                htmlFor="nextServiceDate"
+                hint="Optional"
+              >
+                <Input
+                  id="nextServiceDate"
+                  type="date"
+                  value={form.nextServiceDate}
+                  onChange={(e) => set("nextServiceDate", e.target.value)}
+                />
+              </Field>
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <Field label="Description" htmlFor="description" hint="Optional">
+                <Textarea
+                  id="description"
+                  value={form.description}
+                  onChange={(e) => set("description", e.target.value)}
+                  placeholder="Any additional details about the asset"
+                />
+              </Field>
+            </motion.div>
+            <motion.div variants={scaleIn} className="flex gap-3 pt-2">
+              <Button type="submit" loading={loading}>
+                Create asset
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => router.push("/assets")}
+              >
+                Cancel
+              </Button>
+            </motion.div>
+          </Stagger>
         </form>
       </Card>
+      </Reveal>
     </div>
   );
 }

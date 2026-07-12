@@ -17,6 +17,14 @@ import {
   Spinner,
 } from "@/components/ui";
 import { SelectMenu } from "@/components/select-menu";
+import {
+  Reveal,
+  Stagger,
+  TimelineReveal,
+  ScrollProgress,
+  scaleIn,
+  motion,
+} from "@/components/motion";
 import { IconSparkles } from "@/components/icons";
 import {
   issueStatusMeta,
@@ -70,7 +78,7 @@ export default function IssueDetailPage() {
   if (error && !issue) return <Alert>{error}</Alert>;
   if (!issue)
     return (
-      <div className="flex justify-center py-20 text-[--color-text-subtle]">
+      <div className="flex justify-center py-20 text-[var(--color-text-subtle)]">
         <Spinner />
       </div>
     );
@@ -83,17 +91,18 @@ export default function IssueDetailPage() {
 
   return (
     <div className="space-y-6">
+      <ScrollProgress />
       <div>
         <Link
           href="/issues"
-          className="text-sm font-medium text-[--color-primary] hover:underline"
+          className="text-sm font-medium text-[var(--color-primary)] hover:underline"
         >
           ← Back to issues
         </Link>
         <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-sm font-semibold text-[--color-primary]">
+              <span className="font-mono text-sm font-semibold text-[var(--color-primary)]">
                 {issue.number}
               </span>
               <Badge tone={priorityMeta[issue.priority].tone}>
@@ -103,13 +112,13 @@ export default function IssueDetailPage() {
                 {issueStatusMeta[s].label}
               </Badge>
             </div>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[--color-text]">
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
               {issue.title}
             </h1>
             {issue.asset && (
               <Link
                 href={`/assets/${issue.asset.id}`}
-                className="mt-1 inline-block text-sm text-[--color-text-subtle] hover:text-[--color-primary]"
+                className="mt-1 inline-block text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-primary)]"
               >
                 {issue.asset.code} — {issue.asset.name} · {issue.asset.location}
               </Link>
@@ -122,54 +131,59 @@ export default function IssueDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
+          <Reveal direction="left">
           <Card className="p-5">
-            <h2 className="text-sm font-semibold text-[--color-text]">
+            <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
               Description
             </h2>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-[--color-text-muted]">
+            <p className="mt-2 whitespace-pre-wrap text-sm text-[var(--color-text-muted)]">
               {issue.description}
             </p>
-            <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-[--color-border] pt-4 text-sm">
+            <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-[var(--color-border)] pt-4 text-sm">
               <div>
-                <dt className="text-xs uppercase text-[--color-text-subtle]">
+                <dt className="text-xs uppercase text-[var(--color-text-subtle)]">
                   Reporter
                 </dt>
-                <dd className="font-medium text-[--color-text]">
+                <dd className="font-medium text-[var(--color-text)]">
                   {issue.reporterName || "Anonymous"}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs uppercase text-[--color-text-subtle]">
+                <dt className="text-xs uppercase text-[var(--color-text-subtle)]">
                   Reported
                 </dt>
-                <dd className="font-medium text-[--color-text]">
+                <dd className="font-medium text-[var(--color-text)]">
                   {formatDate(issue.createdAt)}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs uppercase text-[--color-text-subtle]">
+                <dt className="text-xs uppercase text-[var(--color-text-subtle)]">
                   Assigned to
                 </dt>
-                <dd className="font-medium text-[--color-text]">
+                <dd className="font-medium text-[var(--color-text)]">
                   {issue.assignedTechnician?.name || "Unassigned"}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs uppercase text-[--color-text-subtle]">
+                <dt className="text-xs uppercase text-[var(--color-text-subtle)]">
                   Category
                 </dt>
-                <dd className="font-medium text-[--color-text]">
+                <dd className="font-medium text-[var(--color-text)]">
                   {issue.category || "—"}
                 </dd>
               </div>
             </dl>
           </Card>
+          </Reveal>
 
           {ai && (
-            <Card className="p-5">
+            <Reveal direction="scale" delay={0.05}>
+            <Card tone="editorial" className="p-5">
               <div className="flex items-center gap-2">
-                <IconSparkles className="h-4 w-4 text-[--color-primary]" />
-                <h2 className="text-sm font-semibold text-[--color-text]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
+                  <IconSparkles className="h-4 w-4 text-[var(--color-gold)]" />
+                </span>
+                <h2 className="font-display text-sm font-semibold text-white">
                   AI Triage
                 </h2>
                 <Badge tone={ai.source === "ai" ? "primary" : "neutral"}>
@@ -179,10 +193,10 @@ export default function IssueDetailPage() {
               </div>
               {ai.possibleCauses?.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs font-semibold uppercase text-[--color-text-subtle]">
+                  <p className="text-xs font-semibold uppercase text-white/50">
                     Possible causes
                   </p>
-                  <ul className="mt-1 list-inside list-disc text-sm text-[--color-text-muted]">
+                  <ul className="mt-1 list-inside list-disc text-sm text-white/80">
                     {ai.possibleCauses.map((c, i) => (
                       <li key={i}>{c}</li>
                     ))}
@@ -191,10 +205,10 @@ export default function IssueDetailPage() {
               )}
               {ai.initialChecks?.length > 0 && (
                 <div className="mt-3">
-                  <p className="text-xs font-semibold uppercase text-[--color-text-subtle]">
+                  <p className="text-xs font-semibold uppercase text-white/50">
                     Initial checks
                   </p>
-                  <ul className="mt-1 list-inside list-disc text-sm text-[--color-text-muted]">
+                  <ul className="mt-1 list-inside list-disc text-sm text-white/80">
                     {ai.initialChecks.map((c, i) => (
                       <li key={i}>{c}</li>
                     ))}
@@ -207,6 +221,7 @@ export default function IssueDetailPage() {
                 </div>
               )}
             </Card>
+            </Reveal>
           )}
 
           {/* Evidence */}
@@ -219,23 +234,25 @@ export default function IssueDetailPage() {
           />
 
           {/* Maintenance records */}
+          <Reveal>
           <Card className="overflow-hidden">
-            <div className="border-b border-[--color-border] px-5 py-4">
-              <h2 className="text-sm font-semibold text-[--color-text]">
+            <div className="border-b border-[var(--color-border)] px-5 py-4">
+              <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
                 Maintenance records ({issue.maintenanceRecords?.length ?? 0})
               </h2>
             </div>
             {!issue.maintenanceRecords ||
             issue.maintenanceRecords.length === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-[--color-text-subtle]">
+              <p className="px-5 py-8 text-center text-sm text-[var(--color-text-subtle)]">
                 No maintenance recorded yet.
               </p>
             ) : (
-              <ul className="divide-y divide-[--color-border]">
-                {issue.maintenanceRecords.map((r) => (
-                  <li key={r.id} className="px-5 py-4">
-                    <p className="text-sm text-[--color-text]">{r.notes}</p>
-                    <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[--color-text-subtle]">
+              <TimelineReveal showConnector className="space-y-1 p-5">
+                {issue.maintenanceRecords.map((r, i) => (
+                  <TimelineReveal.Step key={r.id} index={i} className="pb-5 last:pb-0">
+                    <span className="absolute left-0 top-1 h-3 w-3 rounded-full border-2 border-[var(--color-primary)] bg-[var(--color-surface)]" />
+                    <p className="text-sm text-[var(--color-text)]">{r.notes}</p>
+                    <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--color-text-subtle)]">
                       {r.technician && <span>By {r.technician.name}</span>}
                       {r.cost != null && <span>Cost: {String(r.cost)}</span>}
                       {r.timeSpent != null && <span>{r.timeSpent} min</span>}
@@ -244,21 +261,22 @@ export default function IssueDetailPage() {
                       )}
                       <span>{formatDate(r.createdAt)}</span>
                     </div>
-                  </li>
+                  </TimelineReveal.Step>
                 ))}
-              </ul>
+              </TimelineReveal>
             )}
           </Card>
+          </Reveal>
         </div>
 
         {/* Actions */}
-        <div className="space-y-6">
+        <Reveal direction="right" className="space-y-6">
           <Card className="p-5">
-            <h2 className="text-sm font-semibold text-[--color-text]">
+            <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
               Actions
             </h2>
             {!canAct && (
-              <p className="mt-3 text-sm text-[--color-text-subtle]">
+              <p className="mt-3 text-sm text-[var(--color-text-subtle)]">
                 You can only act on issues assigned to you.
               </p>
             )}
@@ -373,7 +391,7 @@ export default function IssueDetailPage() {
               )}
             </div>
           </Card>
-        </div>
+        </Reveal>
       </div>
     </div>
   );
@@ -451,8 +469,8 @@ function EvidenceSection({
 
   return (
     <Card className="overflow-hidden">
-      <div className="flex items-center justify-between border-b border-[--color-border] px-5 py-4">
-        <h2 className="text-sm font-semibold text-[--color-text]">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
+        <h2 className="text-sm font-semibold text-[var(--color-text)]">
           Evidence ({evidence.length})
         </h2>
         {canAct && (
@@ -476,29 +494,31 @@ function EvidenceSection({
         )}
       </div>
       {evidence.length === 0 ? (
-        <p className="px-5 py-8 text-center text-sm text-[--color-text-subtle]">
+        <p className="px-5 py-8 text-center text-sm text-[var(--color-text-subtle)]">
           No evidence attached yet.
         </p>
       ) : (
-        <div className="grid grid-cols-3 gap-3 p-5 sm:grid-cols-4">
+        <Stagger className="grid grid-cols-3 gap-3 p-5 sm:grid-cols-4">
           {evidence.map((e) =>
             e.type === "VIDEO" ? (
-              <a
+              <motion.a
                 key={e.id}
+                variants={scaleIn}
                 href={e.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex aspect-square items-center justify-center rounded-lg border border-[--color-border] bg-[--color-surface-muted] text-xs font-medium text-[--color-primary]"
+                className="flex aspect-square items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-xs font-medium text-[var(--color-primary)]"
               >
                 ▶ Video
-              </a>
+              </motion.a>
             ) : (
-              <a
+              <motion.a
                 key={e.id}
+                variants={scaleIn}
                 href={e.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative aspect-square overflow-hidden rounded-lg border border-[--color-border]"
+                className="group relative aspect-square overflow-hidden rounded-lg border border-[var(--color-border)]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -506,10 +526,10 @@ function EvidenceSection({
                   alt="Evidence"
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-              </a>
+              </motion.a>
             ),
           )}
-        </div>
+        </Stagger>
       )}
     </Card>
   );
@@ -543,8 +563,8 @@ function MaintenanceForm({
   }
 
   return (
-    <div className="space-y-2 border-t border-[--color-border] pt-3">
-      <p className="text-xs font-semibold uppercase text-[--color-text-subtle]">
+    <div className="space-y-2 border-t border-[var(--color-border)] pt-3">
+      <p className="text-xs font-semibold uppercase text-[var(--color-text-subtle)]">
         Record maintenance
       </p>
       <Field label="Notes" htmlFor="notes">

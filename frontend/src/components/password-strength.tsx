@@ -14,7 +14,7 @@ function getStrength(password: string): { score: number; label: string; color: s
 
   if (score <= 1) return { score: 1, label: "Weak", color: "#dc2626" };
   if (score <= 2) return { score: 2, label: "Fair", color: "#d97706" };
-  if (score <= 3) return { score: 3, label: "Good", color: "#0ea5e9" };
+  if (score <= 3) return { score: 3, label: "Good", color: "#2b7a78" };
   return { score: 4, label: "Strong", color: "#16a34a" };
 }
 
@@ -33,7 +33,7 @@ export function PasswordStrength({ password }: { password: string }) {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-1 flex-1 overflow-hidden rounded-full bg-[--color-surface-muted]"
+            className="h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-surface-muted)]"
           >
             <motion.div
               className="h-full rounded-full"

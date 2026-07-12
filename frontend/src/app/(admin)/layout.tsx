@@ -39,7 +39,7 @@ export default function AdminLayout({
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-[--color-text-subtle]">
+      <div className="flex min-h-screen items-center justify-center text-[var(--color-text-subtle)]">
         <Spinner />
       </div>
     );
@@ -56,7 +56,8 @@ export default function AdminLayout({
         className="relative hidden overflow-hidden border-r border-white/5 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col"
         style={{ background: "var(--gradient-sidebar)" }}
       >
-        <div className="flex items-center px-6 py-7">
+        <div className="grain pointer-events-none absolute inset-0 opacity-[0.04]" />
+        <div className="relative flex items-center px-6 py-7">
           <Image
             src="/logo.png"
             alt="MaintainIQ"
@@ -89,7 +90,7 @@ export default function AdminLayout({
                 {active && (
                   <motion.span
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(37_99_235/0.28)] to-[rgb(37_99_235/0.08)] shadow-[inset_3px_0_0_var(--color-primary)]"
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(200_162_92/0.24)] to-[rgb(200_162_92/0.06)] shadow-[inset_3px_0_0_var(--color-gold)]"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
@@ -103,7 +104,7 @@ export default function AdminLayout({
                   <Icon
                     className={`h-[18px] w-[18px] shrink-0 transition-colors ${
                       active
-                        ? "text-[#60a5fa]"
+                        ? "text-[var(--color-gold)]"
                         : "text-[#7f8ba6] group-hover:text-[#c3ccde]"
                     }`}
                   />
@@ -134,7 +135,10 @@ export default function AdminLayout({
 
         <div className="p-3 pt-1">
           <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2.5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#22c55e] text-sm font-bold text-white shadow-[0_2px_8px_-2px_rgb(37_99_235/0.6)]">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-[0_2px_8px_-2px_rgb(200_162_92/0.6)]"
+              style={{ background: "var(--gradient-brand)" }}
+            >
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
@@ -178,13 +182,13 @@ export default function AdminLayout({
           <button
             onClick={logout}
             aria-label="Sign out"
-            className="cursor-pointer rounded-lg p-2 text-[--color-sidebar-text] hover:bg-white/10"
+            className="cursor-pointer rounded-lg p-2 text-[var(--color-sidebar-text)] hover:bg-white/10"
           >
             <IconLogout className="h-5 w-5" />
           </button>
         </header>
 
-        <nav className="flex gap-1 border-b border-[--color-border] bg-[--color-surface] px-2 py-2 lg:hidden">
+        <nav className="flex gap-1 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-2 lg:hidden">
           {nav.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -194,8 +198,8 @@ export default function AdminLayout({
                 href={item.href}
                 className={`flex-1 rounded-lg px-3 py-2 text-center text-sm font-medium ${
                   active
-                    ? "bg-[--color-primary-soft] text-[--color-primary]"
-                    : "text-[--color-text-muted]"
+                    ? "bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+                    : "text-[var(--color-text-muted)]"
                 }`}
               >
                 {item.label}
@@ -208,9 +212,9 @@ export default function AdminLayout({
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
+              initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
               {children}

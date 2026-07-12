@@ -52,10 +52,10 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       <Reveal>
-        <h1 className="font-display text-3xl font-bold tracking-tight text-[--color-text]">
+        <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
           Team
         </h1>
-        <p className="mt-1.5 text-sm text-[--color-text-subtle]">
+        <p className="mt-1.5 text-sm text-[var(--color-text-subtle)]">
           Manage administrators, supervisors and technicians.
         </p>
       </Reveal>
@@ -75,21 +75,21 @@ export default function UsersPage() {
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.3 }}
-                    className="flex cursor-default items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-[--color-surface-muted]"
+                    className="flex cursor-default items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-[var(--color-surface-muted)]"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <motion.div
                         whileHover={{ scale: 1.08 }}
                         transition={{ type: "spring", stiffness: 400, damping: 18 }}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[--color-primary-soft] text-sm font-bold text-[--color-primary]"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary-soft)] text-sm font-bold text-[var(--color-primary)]"
                       >
                         {u.name.charAt(0).toUpperCase()}
                       </motion.div>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-[--color-text]">
+                        <p className="truncate text-sm font-semibold text-[var(--color-text)]">
                           {u.name}
                         </p>
-                        <p className="truncate text-xs text-[--color-text-subtle]">
+                        <p className="truncate text-xs text-[var(--color-text-subtle)]">
                           {u.email}
                         </p>
                       </div>
@@ -146,7 +146,7 @@ function CreateUserForm({
 
   return (
     <Card glass className="p-5">
-      <h2 className="font-display text-base font-semibold text-[--color-text]">
+      <h2 className="font-display text-base font-semibold text-[var(--color-text)]">
         Add member
       </h2>
       <form onSubmit={submit} className="mt-4 space-y-3">

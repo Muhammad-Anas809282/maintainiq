@@ -23,9 +23,9 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
 const toneStyles: Record<ToastTone, string> = {
-  success: "border-l-[--color-success] text-[--color-success]",
-  error: "border-l-[--color-danger] text-[--color-danger]",
-  info: "border-l-[--color-primary] text-[--color-primary]",
+  success: "border-l-[var(--color-success)] text-[var(--color-success)]",
+  error: "border-l-[var(--color-danger)] text-[var(--color-danger)]",
+  info: "border-l-[var(--color-primary)] text-[var(--color-primary)]",
 };
 
 function ToastIcon({ tone }: { tone: ToastTone }) {
@@ -86,10 +86,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 40, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 320, damping: 26 }}
-              className={`pointer-events-auto flex items-center gap-3 rounded-xl border-l-4 bg-[--color-surface] px-4 py-3 shadow-[--shadow-lift] ${toneStyles[t.tone]}`}
+              className={`pointer-events-auto flex items-center gap-3 rounded-xl border-l-4 bg-[var(--color-surface)] px-4 py-3 shadow-[var(--shadow-lift)] ${toneStyles[t.tone]}`}
             >
               <ToastIcon tone={t.tone} />
-              <p className="text-sm font-medium text-[--color-text]">
+              <p className="text-sm font-medium text-[var(--color-text)]">
                 {t.message}
               </p>
             </motion.div>

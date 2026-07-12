@@ -131,11 +131,12 @@ export default function SignupPage() {
           animate={{ y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
           whileTap={status === "idle" ? { scale: 0.985 } : undefined}
-          className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-300 hover:enabled:bg-[--color-primary-hover] disabled:cursor-not-allowed disabled:opacity-100"
+          className="group relative flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-colors duration-300 hover:enabled:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-100"
           style={{
             backgroundColor: status === "success" ? "#16a34a" : "var(--color-primary)",
           }}
         >
+          <span className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
           <AnimatePresence mode="wait" initial={false}>
             {status === "loading" ? (
               <motion.span
@@ -178,12 +179,12 @@ export default function SignupPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="mt-6 text-center text-sm text-[--color-text-subtle]"
+        className="mt-6 text-center text-sm text-[var(--color-text-subtle)]"
       >
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-semibold text-[--color-primary] hover:underline"
+          className="font-semibold text-[var(--color-primary)] hover:underline"
         >
           Sign in!
         </Link>

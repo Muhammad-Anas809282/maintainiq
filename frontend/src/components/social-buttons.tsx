@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "motion/react";
 import { API_URL } from "@/lib/api";
 
@@ -27,65 +26,29 @@ function GoogleIcon() {
   );
 }
 
-function MicrosoftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 23 23">
-      <path fill="#F25022" d="M1 1h10v10H1z" />
-      <path fill="#7FBA00" d="M12 1h10v10H12z" />
-      <path fill="#00A4EF" d="M1 12h10v10H1z" />
-      <path fill="#FFB900" d="M12 12h10v10H12z" />
-    </svg>
-  );
-}
-
-function GithubIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="#0b1220">
-      <path d="M12 1.27a11 11 0 0 0-3.48 21.46c.55.09.73-.24.73-.53v-1.85c-3.03.66-3.67-1.46-3.67-1.46-.5-1.26-1.21-1.6-1.21-1.6-.99-.67.07-.66.07-.66 1.1.08 1.67 1.13 1.67 1.13.97 1.67 2.55 1.19 3.17.91.1-.71.38-1.19.69-1.46-2.42-.28-4.96-1.21-4.96-5.38 0-1.19.42-2.16 1.13-2.92-.11-.28-.49-1.39.11-2.9 0 0 .92-.3 3.02 1.11a10.4 10.4 0 0 1 5.5 0c2.1-1.41 3.02-1.11 3.02-1.11.6 1.51.22 2.62.11 2.9.7.76 1.12 1.73 1.12 2.92 0 4.18-2.54 5.1-4.97 5.37.39.34.74 1 .74 2.03v3.01c0 .29.19.63.74.52A11 11 0 0 0 12 1.27z" />
-    </svg>
-  );
-}
-
 export function SocialButtons() {
-  const [note, setNote] = useState(false);
-  const providers = [
-    { name: "Google", icon: <GoogleIcon />, href: `${API_URL}/auth/google` },
-    { name: "Microsoft", icon: <MicrosoftIcon />, href: null },
-    { name: "GitHub", icon: <GithubIcon />, href: null },
-  ];
-
   return (
     <div className="mt-6">
       <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-[--color-border]" />
-        <span className="text-xs text-[--color-text-subtle]">
+        <span className="h-px flex-1 bg-[var(--color-border)]" />
+        <span className="text-xs text-[var(--color-text-subtle)]">
           or continue with
         </span>
-        <span className="h-px flex-1 bg-[--color-border]" />
+        <span className="h-px flex-1 bg-[var(--color-border)]" />
       </div>
-      <div className="mt-4 flex items-center justify-center gap-4">
-        {providers.map((p, i) => (
-          <motion.a
-            key={p.name}
-            href={p.href ?? undefined}
-            onClick={p.href ? undefined : () => setNote(true)}
-            aria-label={`Continue with ${p.name}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.05 * i }}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.92 }}
-            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[--color-border-strong] bg-[--color-surface] shadow-[--shadow-card] transition-colors hover:border-[--color-primary]"
-          >
-            {p.icon}
-          </motion.a>
-        ))}
-      </div>
-      {note && (
-        <p className="mt-3 text-center text-xs text-[--color-text-subtle]">
-          Social sign-in is coming soon — please use email for now.
-        </p>
-      )}
+      <motion.a
+        href={`${API_URL}/auth/google`}
+        aria-label="Continue with Google"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05 }}
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.98 }}
+        className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-surface)] py-3 text-sm font-semibold text-[var(--color-text)] shadow-[var(--shadow-card)] transition-colors hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-muted)]"
+      >
+        <GoogleIcon />
+        Continue with Google
+      </motion.a>
     </div>
   );
 }

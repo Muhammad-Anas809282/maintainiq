@@ -8,10 +8,10 @@ const TONE_COLOR: Record<string, string> = {
   warning: "#d97706",
   danger: "#dc2626",
   info: "#0284c7",
-  primary: "#2563eb",
-  neutral: "#94a3b8",
+  primary: "#8f6425",
+  neutral: "#9c8f74",
   accent: "#22c55e",
-  sky: "#0ea5e9",
+  sky: "#2b7a78",
   teal: "#14b8a6",
   violet: "#8b5cf6",
   rose: "#f43f5e",
@@ -96,27 +96,27 @@ export function DonutChart({
           ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display text-3xl font-bold text-[--color-text]">
+          <span className="font-display text-3xl font-bold text-[var(--color-text)]">
             {total}
           </span>
-          <span className="text-xs text-[--color-text-subtle]">{centerLabel}</span>
+          <span className="text-xs text-[var(--color-text-subtle)]">{centerLabel}</span>
         </div>
       </div>
       <ul className="min-w-0 flex-1 space-y-2">
         {segments.map((s) => (
           <li key={s.label} className="flex items-center justify-between gap-3 text-sm">
-            <span className="flex items-center gap-2 truncate text-[--color-text-muted]">
+            <span className="flex items-center gap-2 truncate text-[var(--color-text-muted)]">
               <span
                 className="h-2.5 w-2.5 shrink-0 rounded-full"
                 style={{ background: TONE_COLOR[s.tone] }}
               />
               <span className="truncate">{s.label}</span>
             </span>
-            <span className="font-semibold text-[--color-text]">{s.value}</span>
+            <span className="font-semibold text-[var(--color-text)]">{s.value}</span>
           </li>
         ))}
         {segments.length === 0 && (
-          <li className="text-sm text-[--color-text-subtle]">No data yet.</li>
+          <li className="text-sm text-[var(--color-text-subtle)]">No data yet.</li>
         )}
       </ul>
     </div>
@@ -206,13 +206,13 @@ export function GaugeChart({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display text-2xl font-bold text-[--color-text]">
+          <span className="font-display text-2xl font-bold text-[var(--color-text)]">
             {value}
-            <span className="text-base text-[--color-text-subtle]">{suffix}</span>
+            <span className="text-base text-[var(--color-text-subtle)]">{suffix}</span>
           </span>
         </div>
       </div>
-      <p className="mt-2 text-center text-xs font-medium text-[--color-text-subtle]">
+      <p className="mt-2 text-center text-xs font-medium text-[var(--color-text-subtle)]">
         {label}
       </p>
     </div>
@@ -299,13 +299,13 @@ export function AreaChart({
       </svg>
       {hover !== null && data[hover] && (
         <div
-          className="pointer-events-none absolute -top-2 z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-[--color-text] px-2.5 py-1.5 text-center shadow-lg"
+          className="pointer-events-none absolute -top-2 z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-[var(--color-text)] px-2.5 py-1.5 text-center shadow-lg"
           style={{ left: `${((pts[hover][0] - pad) / (w - pad * 2)) * 100}%` }}
         >
-          <p className="text-xs font-bold text-[--color-surface]">
+          <p className="text-xs font-bold text-[var(--color-surface)]">
             {data[hover].count} issue{data[hover].count === 1 ? "" : "s"}
           </p>
-          <p className="text-[10px] text-[--color-surface] opacity-70">
+          <p className="text-[10px] text-[var(--color-surface)] opacity-70">
             {new Date(data[hover].date).toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",
@@ -323,18 +323,18 @@ export function BarChart({ segments }: { segments: Segment[] }) {
   const max = Math.max(1, ...segments.map((s) => s.value));
 
   if (segments.length === 0)
-    return <p className="text-sm text-[--color-text-subtle]">No data yet.</p>;
+    return <p className="text-sm text-[var(--color-text-subtle)]">No data yet.</p>;
 
   return (
     <div className="space-y-3">
       {segments.map((s, i) => (
         <div key={s.label} className="space-y-1">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-[--color-text-muted]">{s.label}</span>
-            <span className="font-semibold text-[--color-text]">{s.value}</span>
+            <span className="text-[var(--color-text-muted)]">{s.label}</span>
+            <span className="font-semibold text-[var(--color-text)]">{s.value}</span>
           </div>
           <div
-            className="h-2.5 overflow-hidden rounded-full bg-[--color-surface-muted]"
+            className="h-2.5 overflow-hidden rounded-full bg-[var(--color-surface-muted)]"
             title={`${s.label}: ${s.value}`}
           >
             <motion.div

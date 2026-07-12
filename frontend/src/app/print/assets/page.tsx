@@ -33,7 +33,7 @@ function PrintContent() {
 
   if (!labels)
     return (
-      <div className="flex min-h-screen items-center justify-center text-[--color-text-subtle]">
+      <div className="flex min-h-screen items-center justify-center text-[var(--color-text-subtle)]">
         <Spinner />
       </div>
     );

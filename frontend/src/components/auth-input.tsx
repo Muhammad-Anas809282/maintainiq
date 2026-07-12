@@ -37,13 +37,13 @@ export function PillInput({ icon: Icon, label, type = "text", ...props }: PillIn
               }
         }
         transition={{ duration: 0.18, ease: "easeOut" }}
-        className={`flex items-center gap-3 rounded-xl border bg-[--color-surface] px-4 py-3 transition-colors duration-200 ${
-          focused ? "border-[--color-primary]" : "border-[--color-border-strong]"
+        className={`flex items-center gap-3 rounded-xl border bg-[var(--color-surface)] px-4 py-3 transition-colors duration-200 ${
+          focused ? "border-[var(--color-primary)]" : "border-[var(--color-border-strong)]"
         }`}
       >
         <Icon
           className={`h-[18px] w-[18px] shrink-0 transition-colors duration-200 ${
-            focused ? "text-[--color-primary]" : "text-[--color-text-subtle]"
+            focused ? "text-[var(--color-primary)]" : "text-[var(--color-text-subtle)]"
           }`}
         />
         <input
@@ -58,7 +58,7 @@ export function PillInput({ icon: Icon, label, type = "text", ...props }: PillIn
             setFocused(false);
             props.onBlur?.(e);
           }}
-          className="w-full min-w-0 bg-transparent text-sm text-[--color-text] placeholder:text-[--color-text-subtle] focus:outline-none"
+          className="w-full min-w-0 bg-transparent text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)] focus:outline-none"
         />
         {isPassword && (
           <button
@@ -66,7 +66,7 @@ export function PillInput({ icon: Icon, label, type = "text", ...props }: PillIn
             tabIndex={-1}
             onClick={() => setShow((s) => !s)}
             aria-label={show ? "Hide password" : "Show password"}
-            className="shrink-0 cursor-pointer text-[--color-text-subtle] transition-colors hover:text-[--color-text]"
+            className="shrink-0 cursor-pointer text-[var(--color-text-subtle)] transition-colors hover:text-[var(--color-text)]"
           >
             {show ? (
               <IconEyeOff className="h-[18px] w-[18px]" />
