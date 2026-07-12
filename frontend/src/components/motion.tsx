@@ -98,20 +98,26 @@ export function Stagger({
   children,
   className,
   once = true,
+  trigger = "scroll",
 }: {
   children: ReactNode;
   className?: string;
   once?: boolean;
+  /** See `Reveal`'s `trigger` prop — use "mount" for above-the-fold content. */
+  trigger?: "scroll" | "mount";
 }) {
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
+  const viewProps =
+    trigger === "mount"
+      ? { animate: "show" as const }
+      : { whileInView: "show" as const, viewport: { once, margin: "-40px" } };
   return (
     <motion.div
       className={className}
       variants={staggerContainer}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once, margin: "-40px" }}
+      {...viewProps}
     >
       {children}
     </motion.div>
@@ -127,6 +133,14 @@ interface RevealProps {
   /** Adds a soft focus-pull blur on entry, on top of the fade/slide. */
   blur?: boolean;
   delay?: number;
+  /**
+   * "scroll" (default) reveals via whileInView — appropriate for content
+   * below the fold. "mount" animates immediately via initial/animate instead
+   * — required for anything always visible without scrolling (page headers,
+   * hero cards), since whileInView's IntersectionObserver callback doesn't
+   * fire synchronously and can be caught mid-fade on first paint.
+   */
+  trigger?: "scroll" | "mount";
 }
 
 /** A single staggered/standalone reveal item. */
@@ -137,6 +151,7 @@ export function Reveal({
   direction = "up",
   blur = false,
   delay = 0,
+  trigger = "scroll",
 }: RevealProps) {
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
@@ -150,13 +165,19 @@ export function Reveal({
         },
       }
     : resolved;
+  const viewProps =
+    trigger === "mount"
+      ? { animate: "show" as const }
+      : {
+          whileInView: "show" as const,
+          viewport: { once: true, margin: "-40px" },
+        };
   return (
     <motion.div
       className={className}
       variants={withBlur}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-40px" }}
+      {...viewProps}
       transition={{ delay }}
     >
       {children}

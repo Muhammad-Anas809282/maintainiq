@@ -131,7 +131,7 @@ export default function IssueDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Reveal direction="left">
+          <Reveal direction="left" trigger="mount">
           <Card className="p-5">
             <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
               Description
@@ -270,7 +270,7 @@ export default function IssueDetailPage() {
         </div>
 
         {/* Actions */}
-        <Reveal direction="right" className="space-y-6">
+        <Reveal direction="right" trigger="mount" className="space-y-6">
           <Card className="p-5">
             <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
               Actions

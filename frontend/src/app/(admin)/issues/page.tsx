@@ -55,7 +55,7 @@ export default function IssuesPage() {
 
   return (
     <div className="space-y-6">
-      <Reveal>
+      <Reveal trigger="mount">
         <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
           Issues
         </h1>
@@ -101,7 +101,7 @@ export default function IssuesPage() {
           description="No issues match the current filters."
         />
       ) : (
-        <Reveal>
+        <Reveal trigger="mount">
         <Card glass className="overflow-hidden">
           <ul className="divide-y divide-white/50">
             {data?.data.map((issue, i) => (

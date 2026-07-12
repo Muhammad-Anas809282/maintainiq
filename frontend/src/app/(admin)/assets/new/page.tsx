@@ -50,7 +50,7 @@ export default function NewAssetPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <Reveal>
+      <Reveal trigger="mount">
         <Link
           href="/assets"
           className="text-sm font-medium text-[var(--color-primary)] hover:underline"
@@ -65,7 +65,7 @@ export default function NewAssetPage() {
         </p>
       </Reveal>
 
-      <Reveal direction="scale" delay={0.05}>
+      <Reveal direction="scale" delay={0.05} trigger="mount">
       <Card glass className="!rounded-[var(--radius-editorial)] p-6">
         <form onSubmit={onSubmit} className="space-y-4">
           {error && <Alert>{error}</Alert>}

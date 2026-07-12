@@ -71,7 +71,7 @@ export default function AssetsPage() {
 
   return (
     <div className="space-y-6">
-      <Reveal className="flex flex-wrap items-center justify-between gap-3">
+      <Reveal trigger="mount" className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
             Assets
@@ -122,7 +122,7 @@ export default function AssetsPage() {
           description="Try adjusting your search, or register a new asset."
         />
       ) : (
-        <Reveal>
+        <Reveal trigger="mount">
         {isAdmin && selected.size > 0 && (
           <div className="mb-3 flex items-center justify-between rounded-xl border border-[var(--color-primary)] bg-[var(--color-primary-soft)] px-4 py-2.5">
             <span className="text-sm font-medium text-[var(--color-primary)]">

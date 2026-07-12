@@ -51,7 +51,7 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <Reveal>
+      <Reveal trigger="mount">
         <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
           Team
         </h1>
@@ -61,7 +61,7 @@ export default function UsersPage() {
       </Reveal>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-        <Reveal>
+        <Reveal trigger="mount">
           {!users ? (
             <Skeleton className="h-72" />
           ) : users.length === 0 ? (
@@ -102,7 +102,7 @@ export default function UsersPage() {
           )}
         </Reveal>
 
-        <Reveal delay={0.05}>
+        <Reveal delay={0.05} trigger="mount">
           <CreateUserForm onCreated={load} notify={toast} />
         </Reveal>
       </div>

@@ -140,7 +140,7 @@ export default function DashboardPage() {
         <div className="h-full w-full rounded-full" style={{ background: "var(--color-gold)" }} />
       </ParallaxLayer>
 
-      <Reveal className="flex flex-wrap items-end justify-between gap-3">
+      <Reveal trigger="mount" className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">
             Dashboard
@@ -153,7 +153,7 @@ export default function DashboardPage() {
       </Reveal>
 
       {/* KPI tiles */}
-      <Stagger className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <Stagger trigger="mount" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatTile
           label="Total Assets"
           value={data.assets.total}
