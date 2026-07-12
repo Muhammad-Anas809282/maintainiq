@@ -69,13 +69,16 @@ enum HistoryAction {
 // ---------- Models ----------
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  name         String
-  role         UserRole @default(TECHNICIAN)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  passwordHash        String
+  name                String
+  role                UserRole  @default(TECHNICIAN)
+  // Password-reset flow — hashed token + expiry, never store the raw token
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   assignedIssues     Issue[]              @relation("AssignedTechnician")
   maintenanceRecords MaintenanceRecord[]

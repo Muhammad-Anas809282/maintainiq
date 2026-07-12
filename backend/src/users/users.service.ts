@@ -21,4 +21,24 @@ export class UsersService {
   findAll(): Promise<User[]> {
     return this.prisma.user.findMany({ orderBy: { createdAt: 'desc' } });
   }
+
+  updatePassword(id: string, passwordHash: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { passwordHash, resetTokenHash: null, resetTokenExpiresAt: null },
+    });
+  }
+
+  setResetToken(id: string, resetTokenHash: string, expiresAt: Date): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { resetTokenHash, resetTokenExpiresAt: expiresAt },
+    });
+  }
+
+  findByValidResetToken(resetTokenHash: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: { resetTokenHash, resetTokenExpiresAt: { gt: new Date() } },
+    });
+  }
 }

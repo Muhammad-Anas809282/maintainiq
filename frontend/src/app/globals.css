@@ -15,22 +15,27 @@
   --color-text-muted: #475569;
   --color-text-subtle: #6b7893;
 
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-soft: #eef2ff;
+  /* Brand blue (matches MaintainIQ logo) */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #eaf1ff;
   --color-primary-contrast: #ffffff;
 
+  /* Brand green (logo accent) */
+  --color-brand-green: #22c55e;
+  --color-brand-green-soft: #dcfce7;
+
   /* Secondary accents for richer, professional charts/data viz */
-  --color-accent: #7c3aed;
+  --color-accent: #22c55e;
   --color-accent-2: #0ea5e9;
   --color-accent-3: #14b8a6;
 
-  /* Deep-slate sidebar */
-  --color-sidebar: #0d1424;
-  --color-sidebar-soft: #161f36;
-  --color-sidebar-text: #aeb9d0;
+  /* Premium near-black ink sidebar (logo blends seamlessly) */
+  --color-sidebar: #070b16;
+  --color-sidebar-soft: #101728;
+  --color-sidebar-text: #9aa6bf;
   --color-sidebar-text-strong: #f4f7fb;
-  --color-sidebar-active: #2a3550;
+  --color-sidebar-active: #1b2740;
 
   /* Semantic / status */
   --color-success: #16a34a;
@@ -55,14 +60,23 @@
   --shadow-pop: 0 10px 40px -10px rgb(15 23 42 / 0.28);
 
   /* Subtle brand gradients (accents only, never on body text) */
-  --gradient-brand: linear-gradient(140deg, #4338ca 0%, #6d28d9 48%, #2563eb 100%);
+  --gradient-brand: linear-gradient(140deg, #1d4ed8 0%, #2563eb 52%, #22c55e 130%);
   --gradient-sheen: linear-gradient(135deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0));
+  /* Premium sidebar backdrop — deep ink with faint blue/green brand glow */
+  --gradient-sidebar: radial-gradient(600px 320px at 20% -8%, rgb(37 99 235 / 0.20) 0%, transparent 60%),
+    radial-gradient(520px 300px at 90% 108%, rgb(34 197 94 / 0.14) 0%, transparent 62%),
+    linear-gradient(180deg, #090d1a 0%, #070b16 100%);
   /* Soft, professional app backdrop for glassmorphism */
-  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #e9ebfc 0%, transparent 55%),
-    radial-gradient(1000px 500px at 100% 0%, #e4f1fb 0%, transparent 50%),
-    linear-gradient(180deg, #f4f6fc 0%, #f6f8fb 100%);
+  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #e4edfd 0%, transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, #e2f5ec 0%, transparent 50%),
+    linear-gradient(180deg, #f4f7fc 0%, #f6f8fb 100%);
   /* Dark highlight card (professional accent stat card) */
-  --gradient-dark-card: linear-gradient(150deg, #1e1b4b 0%, #312e81 45%, #3730a3 100%);
+  --gradient-dark-card: linear-gradient(150deg, #0b1e3f 0%, #123a7a 48%, #0f5c3c 130%);
+  /* Rich mesh backdrop for the auth brand panel — deep indigo-to-teal, more alive than flat ink */
+  --gradient-auth-panel: radial-gradient(900px 620px at 12% -6%, rgb(37 99 235 / 0.38) 0%, transparent 58%),
+    radial-gradient(760px 640px at 100% 108%, rgb(34 197 94 / 0.26) 0%, transparent 58%),
+    radial-gradient(520px 460px at 78% 18%, rgb(124 58 237 / 0.18) 0%, transparent 60%),
+    linear-gradient(165deg, #0a1120 0%, #0d1a35 48%, #0a1f22 100%);
 }
 
 /* ---- Dark theme overrides (applied via data-theme="dark" on <html>) ---- */
@@ -77,9 +91,9 @@
   --color-text-muted: #a6b2c8;
   --color-text-subtle: #7e8ba4;
 
-  --color-primary: #818cf8;
-  --color-primary-hover: #a5b0ff;
-  --color-primary-soft: #1e2540;
+  --color-primary: #60a5fa;
+  --color-primary-hover: #93c5fd;
+  --color-primary-soft: #16263f;
   --color-primary-contrast: #0a0f1c;
 
   --color-success-soft: #10251a;
@@ -203,3 +217,10 @@ h1, h2, h3, h4, .font-display {
   50% { transform: translateY(14px) scale(1.03); }
 }
 .animate-floaty-slow { animation: floaty-slow 11s ease-in-out infinite; }
+
+/* Fine film-grain texture for premium dark panels */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  mix-blend-mode: overlay;
+}

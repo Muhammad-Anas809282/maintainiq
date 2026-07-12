@@ -10,11 +10,11 @@ import {
   Button,
   Field,
   Input,
-  Select,
   Skeleton,
   EmptyState,
 } from "@/components/ui";
-import { Reveal } from "@/components/motion";
+import { SelectMenu } from "@/components/select-menu";
+import { Reveal, motion } from "@/components/motion";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/components/toast";
 
@@ -69,15 +69,22 @@ export default function UsersPage() {
           ) : (
             <Card glass className="overflow-hidden">
               <ul className="divide-y divide-white/50">
-                {users.map((u) => (
-                  <li
+                {users.map((u, i) => (
+                  <motion.li
                     key={u.id}
-                    className="flex items-center justify-between gap-4 px-5 py-3.5"
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.3 }}
+                    className="flex cursor-default items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-[--color-surface-muted]"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[--color-primary-soft] text-sm font-bold text-[--color-primary]">
+                      <motion.div
+                        whileHover={{ scale: 1.08 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 18 }}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[--color-primary-soft] text-sm font-bold text-[--color-primary]"
+                      >
                         {u.name.charAt(0).toUpperCase()}
-                      </div>
+                      </motion.div>
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-[--color-text]">
                           {u.name}
@@ -88,7 +95,7 @@ export default function UsersPage() {
                       </div>
                     </div>
                     <Badge tone={ROLE_TONE[u.role]}>{u.role}</Badge>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </Card>
@@ -170,15 +177,17 @@ function CreateUserForm({
           />
         </Field>
         <Field label="Role" htmlFor="u-role">
-          <Select
+          <SelectMenu
             id="u-role"
             value={form.role}
-            onChange={(e) => set("role", e.target.value)}
-          >
-            <option value="TECHNICIAN">Technician</option>
-            <option value="SUPERVISOR">Supervisor</option>
-            <option value="ADMIN">Administrator</option>
-          </Select>
+            onChange={(v) => set("role", v)}
+            ariaLabel="Role"
+            options={[
+              { value: "TECHNICIAN", label: "Technician" },
+              { value: "SUPERVISOR", label: "Supervisor" },
+              { value: "ADMIN", label: "Administrator" },
+            ]}
+          />
         </Field>
         <Button type="submit" loading={loading} className="w-full">
           Create user

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth";
 import { Spinner } from "@/components/ui";
@@ -14,7 +15,6 @@ import {
   IconIssues,
   IconUsers,
   IconLogout,
-  IconLogo,
 } from "@/components/icons";
 
 const baseNav = [
@@ -51,22 +51,30 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
       <CommandPalette />
-      {/* Sidebar (deep slate) */}
-      <aside className="hidden bg-[--color-sidebar] lg:flex lg:flex-col">
-        <div className="flex items-center gap-2.5 px-6 py-6">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white">
-            <IconLogo className="h-5 w-5" />
-          </div>
-          <span className="font-display text-lg font-bold tracking-tight text-[--color-sidebar-text-strong]">
-            MaintainIQ
-          </span>
+      {/* Sidebar (premium ink) — fixed to viewport, independent of page scroll */}
+      <aside
+        className="relative hidden overflow-hidden border-r border-white/5 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col"
+        style={{ background: "var(--gradient-sidebar)" }}
+      >
+        <div className="flex items-center px-6 py-7">
+          <Image
+            src="/logo.png"
+            alt="MaintainIQ"
+            width={865}
+            height={289}
+            priority
+            className="h-11 w-auto select-none"
+          />
         </div>
 
         <div className="px-3 pb-2">
           <CommandTrigger className="w-full" />
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-2">
+        <p className="px-6 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/40">
+          Menu
+        </p>
+        <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-1">
           {nav.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -75,23 +83,30 @@ export default function AdminLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200"
+                aria-current={active ? "page" : undefined}
+                className="group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[15px] font-medium transition-colors duration-200"
               >
                 {active && (
                   <motion.span
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-lg bg-[--color-sidebar-active]"
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(37_99_235/0.28)] to-[rgb(37_99_235/0.08)] shadow-[inset_3px_0_0_var(--color-primary)]"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
                 <span
                   className={`relative z-10 flex items-center gap-3 ${
                     active
-                      ? "text-[--color-sidebar-text-strong]"
-                      : "text-[--color-sidebar-text] hover:text-[--color-sidebar-text-strong]"
+                      ? "text-white"
+                      : "text-[#c3ccde] group-hover:text-white"
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon
+                    className={`h-[18px] w-[18px] shrink-0 transition-colors ${
+                      active
+                        ? "text-[#60a5fa]"
+                        : "text-[#7f8ba6] group-hover:text-[#c3ccde]"
+                    }`}
+                  />
                   {item.label}
                 </span>
               </Link>
@@ -99,16 +114,34 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <div className="p-3">
-          <div className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2.5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-white">
+        {/* System status card — fills space + real product value */}
+        <div className="px-3 pb-2">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              <span className="text-xs font-semibold text-white/85">
+                All systems operational
+              </span>
+            </div>
+            <p className="mt-1.5 text-[11px] leading-relaxed text-white/45">
+              AI triage &amp; QR services running normally.
+            </p>
+          </div>
+        </div>
+
+        <div className="p-3 pt-1">
+          <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.04] px-3 py-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#22c55e] text-sm font-bold text-white shadow-[0_2px_8px_-2px_rgb(37_99_235/0.6)]">
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-[--color-sidebar-text-strong]">
+              <p className="truncate text-sm font-semibold text-white">
                 {user.name}
               </p>
-              <p className="truncate text-xs text-[--color-sidebar-text]">
+              <p className="truncate text-[11px] font-medium uppercase tracking-wide text-[#8b97b0]">
                 {user.role}
               </p>
             </div>
@@ -116,9 +149,9 @@ export default function AdminLayout({
             <button
               onClick={logout}
               aria-label="Sign out"
-              className="cursor-pointer rounded-lg p-2 text-[--color-sidebar-text] transition-colors hover:bg-white/10 hover:text-white"
+              className="cursor-pointer rounded-lg p-1.5 text-[#8b97b0] transition-colors hover:bg-white/10 hover:text-white"
             >
-              <IconLogout className="h-5 w-5" />
+              <IconLogout className="h-[18px] w-[18px]" />
             </button>
           </div>
         </div>
@@ -130,15 +163,18 @@ export default function AdminLayout({
         style={{ background: "var(--gradient-app)" }}
       >
         {/* Mobile top nav */}
-        <header className="flex items-center justify-between bg-[--color-sidebar] px-4 py-3 lg:hidden">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white">
-              <IconLogo className="h-4 w-4" />
-            </div>
-            <span className="font-display font-bold text-[--color-sidebar-text-strong]">
-              MaintainIQ
-            </span>
-          </div>
+        <header
+          className="flex items-center justify-between px-4 py-3 lg:hidden"
+          style={{ background: "var(--gradient-sidebar)" }}
+        >
+          <Image
+            src="/logo.png"
+            alt="MaintainIQ"
+            width={865}
+            height={289}
+            priority
+            className="h-5 w-auto select-none"
+          />
           <button
             onClick={logout}
             aria-label="Sign out"

@@ -13,9 +13,15 @@ export class UsersController {
   // Admin/Supervisor can list staff (e.g. to pick a technician for assignment).
   @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
   @Get()
-  async findAll(@Query('role') role?: UserRole) {
+  async findAll(@Query('role') role?: UserRole, @Query('search') search?: string) {
     const all = await this.users.findAll();
-    const filtered = role ? all.filter((u) => u.role === role) : all;
+    let filtered = role ? all.filter((u) => u.role === role) : all;
+    if (search?.trim()) {
+      const q = search.trim().toLowerCase();
+      filtered = filtered.filter(
+        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
+      );
+    }
     // Never expose password hashes.
     return filtered.map((u) => ({
       id: u.id,

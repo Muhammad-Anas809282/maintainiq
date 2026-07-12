@@ -4,6 +4,8 @@ import { UserRole } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
@@ -26,6 +28,18 @@ export class AuthController {
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto);
+  }
+
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
+  @Post('forgot-password')
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.auth.forgotPassword(dto);
+  }
+
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.auth.resetPassword(dto);
   }
 
   @UseGuards(JwtAuthGuard)

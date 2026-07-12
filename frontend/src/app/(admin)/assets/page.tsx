@@ -8,12 +8,12 @@ import {
   Card,
   Badge,
   Input,
-  Select,
   LinkButton,
   Skeleton,
   EmptyState,
 } from "@/components/ui";
-import { Reveal } from "@/components/motion";
+import { SelectMenu } from "@/components/select-menu";
+import { Reveal, motion } from "@/components/motion";
 import { IconPlus, IconSearch, IconQr } from "@/components/icons";
 import { assetStatusMeta, formatDateShort } from "@/lib/labels";
 import { useAuth } from "@/lib/auth";
@@ -99,19 +99,19 @@ export default function AssetsPage() {
             aria-label="Search assets"
           />
         </div>
-        <Select
+        <SelectMenu
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          aria-label="Filter by status"
+          onChange={setStatus}
+          ariaLabel="Filter by status"
           className="w-52"
-        >
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>
-              {assetStatusMeta[s].label}
-            </option>
-          ))}
-        </Select>
+          options={[
+            { value: "", label: "All statuses" },
+            ...STATUS_OPTIONS.map((s) => ({
+              value: s,
+              label: assetStatusMeta[s].label,
+            })),
+          ]}
+        />
       </div>
 
       {loading && !data ? (
@@ -160,11 +160,14 @@ export default function AssetsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[--color-border]">
-                {data?.data.map((asset) => (
-                  <tr
+                {data?.data.map((asset, i) => (
+                  <motion.tr
                     key={asset.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.25 }}
                     onClick={() => router.push(`/assets/${asset.id}`)}
-                    className="cursor-pointer transition-colors hover:bg-[--color-surface-muted]"
+                    className="cursor-pointer border-l-2 border-l-transparent transition-colors hover:border-l-[--color-primary] hover:bg-[--color-surface-muted]"
                   >
                     {isAdmin && (
                       <td
@@ -200,7 +203,7 @@ export default function AssetsPage() {
                     <td className="whitespace-nowrap px-4 py-3 text-[--color-text-muted]">
                       {formatDateShort(asset.nextServiceDate)}
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>

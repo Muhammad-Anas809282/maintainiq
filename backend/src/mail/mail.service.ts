@@ -63,4 +63,12 @@ export class MailService {
       `<p>Issue <b>${issueNumber}</b> (${title}) has been resolved.</p><p>— MaintainIQ</p>`,
     );
   }
+
+  passwordReset(to: string, name: string, resetUrl: string) {
+    return this.send(
+      to,
+      'Reset your MaintainIQ password',
+      `<p>Hi ${name},</p><p>Click the link below to reset your password. This link expires in 30 minutes.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, you can safely ignore this email.</p><p>— MaintainIQ</p>`,
+    );
+  }
 }

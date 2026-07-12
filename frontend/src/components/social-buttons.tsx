@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 
 function GoogleIcon() {
   return (
@@ -61,17 +62,22 @@ export function SocialButtons() {
         </span>
         <span className="h-px flex-1 bg-[--color-border]" />
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        {providers.map((p) => (
-          <button
+      <div className="mt-4 flex items-center justify-center gap-4">
+        {providers.map((p, i) => (
+          <motion.button
             key={p.name}
             type="button"
             onClick={() => setNote(true)}
             aria-label={`Continue with ${p.name}`}
-            className="flex cursor-pointer items-center justify-center rounded-lg border border-[--color-border-strong] bg-[--color-surface] py-2.5 transition-colors hover:bg-[--color-surface-muted]"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 * i }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.92 }}
+            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[--color-border-strong] bg-[--color-surface] shadow-[--shadow-card] transition-colors hover:border-[--color-primary]"
           >
             {p.icon}
-          </button>
+          </motion.button>
         ))}
       </div>
       {note && (

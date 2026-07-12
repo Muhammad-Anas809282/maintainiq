@@ -9,7 +9,8 @@ import type {
   IssueStatus,
   Paginated,
 } from "@/lib/types";
-import { Card, Badge, Select, Skeleton, EmptyState } from "@/components/ui";
+import { Card, Badge, Skeleton, EmptyState } from "@/components/ui";
+import { SelectMenu } from "@/components/select-menu";
 import { Reveal, motion } from "@/components/motion";
 import {
   issueStatusMeta,
@@ -64,32 +65,32 @@ export default function IssuesPage() {
       </Reveal>
 
       <div className="flex flex-wrap gap-3">
-        <Select
+        <SelectMenu
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          aria-label="Filter by status"
+          onChange={setStatus}
+          ariaLabel="Filter by status"
           className="w-56"
-        >
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>
-              {issueStatusMeta[s].label}
-            </option>
-          ))}
-        </Select>
-        <Select
+          options={[
+            { value: "", label: "All statuses" },
+            ...STATUS_OPTIONS.map((s) => ({
+              value: s,
+              label: issueStatusMeta[s].label,
+            })),
+          ]}
+        />
+        <SelectMenu
           value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-          aria-label="Filter by priority"
+          onChange={setPriority}
+          ariaLabel="Filter by priority"
           className="w-48"
-        >
-          <option value="">All priorities</option>
-          {PRIORITY_OPTIONS.map((p) => (
-            <option key={p} value={p}>
-              {priorityMeta[p].label}
-            </option>
-          ))}
-        </Select>
+          options={[
+            { value: "", label: "All priorities" },
+            ...PRIORITY_OPTIONS.map((p) => ({
+              value: p,
+              label: priorityMeta[p].label,
+            })),
+          ]}
+        />
       </div>
 
       {loading && !data ? (

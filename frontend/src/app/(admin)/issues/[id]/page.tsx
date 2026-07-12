@@ -10,13 +10,13 @@ import {
   Card,
   Badge,
   Button,
-  Select,
   Field,
   Input,
   Textarea,
   Alert,
   Spinner,
 } from "@/components/ui";
+import { SelectMenu } from "@/components/select-menu";
 import { IconSparkles } from "@/components/icons";
 import {
   issueStatusMeta,
@@ -394,18 +394,16 @@ function AssignForm({
   return (
     <div className="space-y-2">
       <Field label="Assign technician" htmlFor="tech">
-        <Select
+        <SelectMenu
           id="tech"
           value={techId}
-          onChange={(e) => setTechId(e.target.value)}
-        >
-          <option value="">Select technician…</option>
-          {techs.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name} ({t.email})
-            </option>
-          ))}
-        </Select>
+          onChange={setTechId}
+          ariaLabel="Assign technician"
+          options={[
+            { value: "", label: "Select technician…" },
+            ...techs.map((t) => ({ value: t.id, label: `${t.name} (${t.email})` })),
+          ]}
+        />
       </Field>
       <Button
         className="w-full"

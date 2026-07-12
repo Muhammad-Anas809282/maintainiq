@@ -66,7 +66,7 @@ export function Card({
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
-    "bg-[--color-primary] text-[--color-primary-contrast] hover:bg-[--color-primary-hover] shadow-[0_6px_18px_-6px_rgb(79_70_229/0.5)]",
+    "bg-[--color-primary] text-[--color-primary-contrast] hover:bg-[--color-primary-hover] shadow-[0_6px_18px_-6px_rgb(37_99_235/0.5)]",
   secondary:
     "bg-[--color-surface] text-[--color-text] border border-[--color-border-strong] hover:bg-[--color-surface-muted]",
   danger: "bg-[--color-danger] text-white hover:opacity-90",
@@ -191,10 +191,23 @@ export function Textarea(props: ComponentProps<"textarea">) {
 
 export function Select(props: ComponentProps<"select">) {
   return (
-    <select
-      {...props}
-      className={`${inputBase} cursor-pointer ${props.className ?? ""}`}
-    />
+    <div className="relative">
+      <select
+        {...props}
+        className={`${inputBase} cursor-pointer appearance-none pr-10 ${props.className ?? ""}`}
+      />
+      <svg
+        className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[--color-text-subtle]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </div>
   );
 }
 

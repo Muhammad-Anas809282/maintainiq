@@ -349,7 +349,7 @@ export default function DashboardPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
                 >
-                  <div className="flex items-center justify-between gap-4 px-6 py-4">
+                  <div className="flex cursor-default items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-white/40">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-[--color-text]">
                         {issue.title}

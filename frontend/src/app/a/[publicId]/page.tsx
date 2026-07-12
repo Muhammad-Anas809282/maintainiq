@@ -16,12 +16,13 @@ import {
   Field,
   Input,
   Textarea,
-  Select,
   Alert,
   Spinner,
 } from "@/components/ui";
+import { SelectMenu } from "@/components/select-menu";
+import Image from "next/image";
 import { Reveal, motion } from "@/components/motion";
-import { IconLogo, IconSparkles, IconCheck } from "@/components/icons";
+import { IconSparkles, IconCheck } from "@/components/icons";
 import {
   assetStatusMeta,
   historyLabel,
@@ -342,20 +343,16 @@ function ReportFlow({
               />
             </Field>
             <Field label="Priority" htmlFor="prio">
-              <Select
+              <SelectMenu
                 id="prio"
                 value={priority}
-                onChange={(e) => {
-                  setPriority(e.target.value as IssuePriority);
+                onChange={(v) => {
+                  setPriority(v as IssuePriority);
                   setEdited(true);
                 }}
-              >
-                {PRIORITIES.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </Select>
+                ariaLabel="Priority"
+                options={PRIORITIES.map((p) => ({ value: p, label: p }))}
+              />
             </Field>
           </div>
 
@@ -409,13 +406,15 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[--color-bg] px-4 py-6">
       <div className="mx-auto w-full max-w-md space-y-4">
-        <div className="flex items-center justify-center gap-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[--color-primary] text-[--color-primary-contrast]">
-            <IconLogo className="h-4 w-4" />
-          </div>
-          <span className="text-lg font-bold tracking-tight text-[--color-text]">
-            MaintainIQ
-          </span>
+        <div className="flex items-center justify-center py-2">
+          <Image
+            src="/logo.png"
+            alt="MaintainIQ"
+            width={865}
+            height={289}
+            priority
+            className="h-8 w-auto select-none"
+          />
         </div>
         {children}
         <p className="pt-4 text-center text-xs text-[--color-text-subtle]">
