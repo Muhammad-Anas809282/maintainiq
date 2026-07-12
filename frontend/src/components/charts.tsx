@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 const TONE_COLOR: Record<string, string> = {
@@ -88,7 +89,10 @@ export function DonutChart({
               whileInView={reduce ? undefined : { strokeDasharray: `${a.dash} ${a.gap}` }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
-            />
+              className="cursor-pointer transition-[stroke-width] hover:[stroke-width:24]"
+            >
+              <title>{`${a.label}: ${a.value}`}</title>
+            </motion.circle>
           ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -215,7 +219,7 @@ export function GaugeChart({
   );
 }
 
-/** Animated area/line trend chart from a simple numeric series. */
+/** Animated, interactive area/line trend chart with a hover tooltip. */
 export function AreaChart({
   data,
   tone = "primary",
@@ -224,6 +228,7 @@ export function AreaChart({
   tone?: keyof typeof TONE_COLOR;
 }) {
   const reduce = useReducedMotion();
+  const [hover, setHover] = useState<number | null>(null);
   const w = 520;
   const h = 160;
   const pad = 8;
@@ -240,39 +245,75 @@ export function AreaChart({
   const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
   const area = `${line} L${pts[pts.length - 1]?.[0] ?? pad},${h - pad} L${pad},${h - pad} Z`;
 
+  function onMove(e: React.MouseEvent<SVGSVGElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * w;
+    const idx = Math.round((x - pad) / (stepX || 1));
+    setHover(Math.max(0, Math.min(data.length - 1, idx)));
+  }
+
+  const hp = hover !== null ? pts[hover] : null;
+
   return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className="h-40 w-full"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id={`area-${tone}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <motion.path
-        d={area}
-        fill={`url(#area-${tone})`}
-        initial={reduce ? false : { opacity: 0 }}
-        whileInView={reduce ? undefined : { opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      />
-      <motion.path
-        d={line}
-        fill="none"
-        stroke={color}
-        strokeWidth={2.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={reduce ? false : { pathLength: 0 }}
-        whileInView={reduce ? undefined : { pathLength: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-      />
-    </svg>
+    <div className="relative">
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        className="h-40 w-full"
+        preserveAspectRatio="none"
+        onMouseMove={onMove}
+        onMouseLeave={() => setHover(null)}
+      >
+        <defs>
+          <linearGradient id={`area-${tone}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+            <stop offset="100%" stopColor={color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          d={area}
+          fill={`url(#area-${tone})`}
+          initial={reduce ? false : { opacity: 0 }}
+          whileInView={reduce ? undefined : { opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        />
+        <motion.path
+          d={line}
+          fill="none"
+          stroke={color}
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          initial={reduce ? false : { pathLength: 0 }}
+          whileInView={reduce ? undefined : { pathLength: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+        />
+        {hp && (
+          <>
+            <line x1={hp[0]} y1={pad} x2={hp[0]} y2={h - pad} stroke={color} strokeOpacity="0.3" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+            <circle cx={hp[0]} cy={hp[1]} r="4" fill={color} stroke="#fff" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          </>
+        )}
+      </svg>
+      {hover !== null && data[hover] && (
+        <div
+          className="pointer-events-none absolute -top-2 z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-[--color-text] px-2.5 py-1.5 text-center shadow-lg"
+          style={{ left: `${((pts[hover][0] - pad) / (w - pad * 2)) * 100}%` }}
+        >
+          <p className="text-xs font-bold text-[--color-surface]">
+            {data[hover].count} issue{data[hover].count === 1 ? "" : "s"}
+          </p>
+          <p className="text-[10px] text-[--color-surface] opacity-70">
+            {new Date(data[hover].date).toLocaleDateString(undefined, {
+              month: "short",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -292,7 +333,10 @@ export function BarChart({ segments }: { segments: Segment[] }) {
             <span className="text-[--color-text-muted]">{s.label}</span>
             <span className="font-semibold text-[--color-text]">{s.value}</span>
           </div>
-          <div className="h-2.5 overflow-hidden rounded-full bg-[--color-surface-muted]">
+          <div
+            className="h-2.5 overflow-hidden rounded-full bg-[--color-surface-muted]"
+            title={`${s.label}: ${s.value}`}
+          >
             <motion.div
               className="h-full rounded-full"
               style={{ background: TONE_COLOR[s.tone] }}

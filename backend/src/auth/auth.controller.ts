@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { UserRole } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -15,11 +16,13 @@ export class AuthController {
 
   // Public self-registration — always a TECHNICIAN. Privileged roles
   // (ADMIN/SUPERVISOR) can only be created by an existing ADMIN below.
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.auth.register(dto, UserRole.TECHNICIAN);
   }
 
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto);

@@ -6,19 +6,23 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth";
 import { Spinner } from "@/components/ui";
+import { CommandPalette, CommandTrigger } from "@/components/command-palette";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   IconDashboard,
   IconAssets,
   IconIssues,
+  IconUsers,
   IconLogout,
   IconLogo,
 } from "@/components/icons";
 
-const nav = [
+const baseNav = [
   { href: "/dashboard", label: "Dashboard", icon: IconDashboard },
   { href: "/assets", label: "Assets", icon: IconAssets },
   { href: "/issues", label: "Issues", icon: IconIssues },
 ];
+const adminNav = [{ href: "/users", label: "Team", icon: IconUsers }];
 
 export default function AdminLayout({
   children,
@@ -41,8 +45,12 @@ export default function AdminLayout({
     );
   }
 
+  const nav =
+    user.role === "ADMIN" ? [...baseNav, ...adminNav] : baseNav;
+
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
+      <CommandPalette />
       {/* Sidebar (deep slate) */}
       <aside className="hidden bg-[--color-sidebar] lg:flex lg:flex-col">
         <div className="flex items-center gap-2.5 px-6 py-6">
@@ -52,6 +60,10 @@ export default function AdminLayout({
           <span className="font-display text-lg font-bold tracking-tight text-[--color-sidebar-text-strong]">
             MaintainIQ
           </span>
+        </div>
+
+        <div className="px-3 pb-2">
+          <CommandTrigger className="w-full" />
         </div>
 
         <nav className="flex-1 space-y-1 px-3 py-2">
@@ -100,6 +112,7 @@ export default function AdminLayout({
                 {user.role}
               </p>
             </div>
+            <ThemeToggle />
             <button
               onClick={logout}
               aria-label="Sign out"

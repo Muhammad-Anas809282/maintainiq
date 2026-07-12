@@ -14,7 +14,7 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { Reveal } from "@/components/motion";
-import { IconPlus, IconSearch } from "@/components/icons";
+import { IconPlus, IconSearch, IconQr } from "@/components/icons";
 import { assetStatusMeta, formatDateShort } from "@/lib/labels";
 import { useAuth } from "@/lib/auth";
 
@@ -34,6 +34,22 @@ export default function AssetsPage() {
   const [status, setStatus] = useState("");
   const [data, setData] = useState<Paginated<Asset> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const isAdmin = user?.role === "ADMIN";
+
+  function toggle(id: string) {
+    setSelected((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  }
+
+  function printLabels() {
+    const ids = Array.from(selected).join(",");
+    router.push(`/print/assets?ids=${ids}`);
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -107,11 +123,34 @@ export default function AssetsPage() {
         />
       ) : (
         <Reveal>
+        {isAdmin && selected.size > 0 && (
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-[--color-primary] bg-[--color-primary-soft] px-4 py-2.5">
+            <span className="text-sm font-medium text-[--color-primary]">
+              {selected.size} selected
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSelected(new Set())}
+                className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-[--color-text-muted] hover:bg-white/50"
+              >
+                Clear
+              </button>
+              <button
+                onClick={printLabels}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[--color-primary] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[--color-primary-hover]"
+              >
+                <IconQr className="h-4 w-4" />
+                Print QR labels
+              </button>
+            </div>
+          </div>
+        )}
         <Card glass className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[--color-border] bg-[--color-surface-muted] text-xs uppercase tracking-wide text-[--color-text-subtle]">
                 <tr>
+                  {isAdmin && <th className="w-10 px-4 py-3" />}
                   <th className="px-4 py-3 font-semibold">Code</th>
                   <th className="px-4 py-3 font-semibold">Name</th>
                   <th className="px-4 py-3 font-semibold">Category</th>
@@ -127,6 +166,20 @@ export default function AssetsPage() {
                     onClick={() => router.push(`/assets/${asset.id}`)}
                     className="cursor-pointer transition-colors hover:bg-[--color-surface-muted]"
                   >
+                    {isAdmin && (
+                      <td
+                        className="px-4 py-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selected.has(asset.id)}
+                          onChange={() => toggle(asset.id)}
+                          aria-label={`Select ${asset.code}`}
+                          className="h-4 w-4 cursor-pointer accent-[--color-primary]"
+                        />
+                      </td>
+                    )}
                     <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold text-[--color-primary]">
                       {asset.code}
                     </td>

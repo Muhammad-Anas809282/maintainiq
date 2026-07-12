@@ -16,6 +16,7 @@ import {
 } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { HistoryService } from '../history/history.service';
+import { MailService } from '../mail/mail.service';
 import { MaintenanceService } from '../maintenance/maintenance.service';
 import { CreateMaintenanceDto } from '../maintenance/dto/create-maintenance.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
@@ -43,6 +44,7 @@ export class IssuesService {
     private readonly prisma: PrismaService,
     private readonly history: HistoryService,
     private readonly maintenance: MaintenanceService,
+    private readonly mail: MailService,
   ) {}
 
   private assertCanModify(issue: Issue, user: AuthUser): void {
@@ -87,8 +89,8 @@ export class IssuesService {
       throw new BadRequestException('Target user is not a technician');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      const updated = await tx.issue.update({
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const u = await tx.issue.update({
         where: { id },
         data: {
           assignedTechnicianId: technicianId,
@@ -105,8 +107,12 @@ export class IssuesService {
         },
         tx,
       );
-      return updated;
+      return u;
     });
+
+    // Notify the assigned technician (no-op if email not configured).
+    void this.mail.issueAssigned(tech.email, tech.name, issue.number, issue.title);
+    return updated;
   }
 
   /** Generic status transition (inspection start, waiting for parts, etc). */
@@ -221,8 +227,8 @@ export class IssuesService {
       );
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      const updated = await tx.issue.update({
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const u = await tx.issue.update({
         where: { id },
         data: { status: IssueStatus.RESOLVED },
       });
@@ -255,8 +261,18 @@ export class IssuesService {
         },
         tx,
       );
-      return updated;
+      return u;
     });
+
+    // Notify the reporter if they left an email address.
+    if (issue.reporterContact && issue.reporterContact.includes('@')) {
+      void this.mail.issueResolved(
+        issue.reporterContact,
+        issue.number,
+        issue.title,
+      );
+    }
+    return updated;
   }
 
   /** Reopen a resolved/closed issue. */

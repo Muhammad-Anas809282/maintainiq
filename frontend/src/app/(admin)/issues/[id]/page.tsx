@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { api, ApiError } from "@/lib/api";
-import type { Issue, AuthUser } from "@/lib/types";
+import { api, ApiError, uploadFile } from "@/lib/api";
+import type { Issue, AuthUser, Evidence } from "@/lib/types";
+import { useToast } from "@/components/toast";
 import {
   Card,
   Badge,
@@ -27,6 +28,7 @@ import { useAuth } from "@/lib/auth";
 export default function IssueDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const toast = useToast();
   const [issue, setIssue] = useState<Issue | null>(null);
   const [techs, setTechs] = useState<AuthUser[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -206,6 +208,15 @@ export default function IssueDetailPage() {
               )}
             </Card>
           )}
+
+          {/* Evidence */}
+          <EvidenceSection
+            issueId={id}
+            evidence={issue.evidence ?? []}
+            canAct={canAct}
+            onChange={load}
+            notify={toast}
+          />
 
           {/* Maintenance records */}
           <Card className="overflow-hidden">
@@ -405,6 +416,104 @@ function AssignForm({
         {current ? "Reassign" : "Assign"}
       </Button>
     </div>
+  );
+}
+
+function EvidenceSection({
+  issueId,
+  evidence,
+  canAct,
+  onChange,
+  notify,
+}: {
+  issueId: string;
+  evidence: Evidence[];
+  canAct: boolean;
+  onChange: () => Promise<void>;
+  notify: (m: string, t?: "success" | "error" | "info") => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      await uploadFile(`/issues/${issueId}/evidence`, file);
+      await onChange();
+      notify("Evidence uploaded", "success");
+    } catch (err) {
+      notify(err instanceof ApiError ? err.message : "Upload failed", "error");
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b border-[--color-border] px-5 py-4">
+        <h2 className="text-sm font-semibold text-[--color-text]">
+          Evidence ({evidence.length})
+        </h2>
+        {canAct && (
+          <>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*,video/*"
+              onChange={onFile}
+              className="hidden"
+            />
+            <Button
+              variant="secondary"
+              loading={uploading}
+              onClick={() => inputRef.current?.click()}
+              className="px-3 py-1.5 text-xs"
+            >
+              Upload
+            </Button>
+          </>
+        )}
+      </div>
+      {evidence.length === 0 ? (
+        <p className="px-5 py-8 text-center text-sm text-[--color-text-subtle]">
+          No evidence attached yet.
+        </p>
+      ) : (
+        <div className="grid grid-cols-3 gap-3 p-5 sm:grid-cols-4">
+          {evidence.map((e) =>
+            e.type === "VIDEO" ? (
+              <a
+                key={e.id}
+                href={e.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex aspect-square items-center justify-center rounded-lg border border-[--color-border] bg-[--color-surface-muted] text-xs font-medium text-[--color-primary]"
+              >
+                ▶ Video
+              </a>
+            ) : (
+              <a
+                key={e.id}
+                href={e.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative aspect-square overflow-hidden rounded-lg border border-[--color-border]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={e.url}
+                  alt="Evidence"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </a>
+            ),
+          )}
+        </div>
+      )}
+    </Card>
   );
 }
 

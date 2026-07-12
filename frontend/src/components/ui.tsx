@@ -233,7 +233,24 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-[--radius-card] border border-dashed border-[--color-border-strong] bg-[--color-surface] px-6 py-16 text-center">
-      <h3 className="text-base font-semibold text-[--color-text]">{title}</h3>
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[--color-surface-muted]">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-text-subtle)"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+          <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+        </svg>
+      </div>
+      <h3 className="font-display text-base font-semibold text-[--color-text]">
+        {title}
+      </h3>
       {description && (
         <p className="mt-1 max-w-sm text-sm text-[--color-text-subtle]">
           {description}

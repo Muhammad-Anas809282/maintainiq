@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { PublicService } from './public.service';
 import { IssuesService } from '../issues/issues.service';
 import { CreateIssueDto } from '../issues/dto/create-issue.dto';
@@ -21,6 +22,7 @@ export class PublicController {
 
   // AI Issue Triage — turn a natural-language complaint into structured
   // suggestions the reporter can review and edit before submitting.
+  @Throttle({ default: { ttl: 60000, limit: 15 } })
   @Post('assets/:publicId/triage')
   triage(
     @Param('publicId') publicId: string,
@@ -30,6 +32,7 @@ export class PublicController {
   }
 
   // Report an issue against an asset from its public QR page.
+  @Throttle({ default: { ttl: 60000, limit: 20 } })
   @Post('assets/:publicId/issues')
   reportIssue(
     @Param('publicId') publicId: string,

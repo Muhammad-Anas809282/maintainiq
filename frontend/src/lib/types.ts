@@ -68,6 +68,16 @@ export interface Issue {
   asset?: Pick<Asset, "id" | "code" | "name" | "location">;
   assignedTechnician?: { id: string; name: string; email?: string } | null;
   maintenanceRecords?: MaintenanceRecord[];
+  evidence?: Evidence[];
+}
+
+export interface Evidence {
+  id: string;
+  url: string;
+  type: "IMAGE" | "VIDEO";
+  issueId?: string | null;
+  maintenanceRecordId?: string | null;
+  uploadedAt: string;
 }
 
 export interface MaintenanceRecord {

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -14,10 +16,14 @@ import { QrModule } from './qr/qr.module';
 import { PublicModule } from './public/public.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { EvidenceModule } from './evidence/evidence.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Global rate limiting: 120 requests / minute / IP by default.
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }]),
+    MailModule,
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -32,6 +38,9 @@ import { EvidenceModule } from './evidence/evidence.module';
     EvidenceModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

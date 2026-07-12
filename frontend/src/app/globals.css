@@ -65,6 +65,47 @@
   --gradient-dark-card: linear-gradient(150deg, #1e1b4b 0%, #312e81 45%, #3730a3 100%);
 }
 
+/* ---- Dark theme overrides (applied via data-theme="dark" on <html>) ---- */
+:root[data-theme="dark"] {
+  --color-bg: #0a0f1c;
+  --color-surface: #121a2b;
+  --color-surface-muted: #1a2334;
+  --color-border: #263149;
+  --color-border-strong: #35425e;
+
+  --color-text: #e9eef7;
+  --color-text-muted: #a6b2c8;
+  --color-text-subtle: #7e8ba4;
+
+  --color-primary: #818cf8;
+  --color-primary-hover: #a5b0ff;
+  --color-primary-soft: #1e2540;
+  --color-primary-contrast: #0a0f1c;
+
+  --color-success-soft: #10251a;
+  --color-warning-soft: #2a1f0c;
+  --color-danger-soft: #2a1414;
+  --color-info-soft: #0c2233;
+  --color-neutral-soft: #1a2334;
+
+  --gradient-app: radial-gradient(1200px 600px at 15% -10%, #141d33 0%, transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, #10233a 0%, transparent 50%),
+    linear-gradient(180deg, #0a0f1c 0%, #0b1120 100%);
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 30px -10px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.4), 0 20px 50px -14px rgb(0 0 0 / 0.6);
+}
+
+:root[data-theme="dark"] .glass {
+  background: rgba(18, 26, 43, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 40px -14px rgb(0 0 0 / 0.5);
+}
+:root[data-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, #1a2334 25%, #222d43 37%, #1a2334 63%);
+  background-size: 800px 100%;
+}
+
 * {
   border-color: var(--color-border);
 }
