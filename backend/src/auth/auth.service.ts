@@ -15,6 +15,7 @@ import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
+import { GoogleProfile } from './strategies/google.strategy';
 
 const SALT_ROUNDS = 10;
 const RESET_TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
@@ -98,6 +99,24 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
     await this.users.updatePassword(user.id, passwordHash);
     return { ok: true };
+  }
+
+  // Find-or-create a user from a verified Google profile, then issue our
+  // own JWT (the app never sees or stores the Google access token).
+  async oauthLogin(profile: GoogleProfile): Promise<AuthResult> {
+    let user = await this.users.findByEmail(profile.email);
+    if (!user) {
+      // Unusable random password — this account can only sign in via Google
+      // unless the owner sets a password through "forgot password".
+      const passwordHash = await bcrypt.hash(randomBytes(24).toString('hex'), SALT_ROUNDS);
+      user = await this.users.create({
+        name: profile.name,
+        email: profile.email,
+        passwordHash,
+        role: UserRole.TECHNICIAN,
+      });
+    }
+    return this.buildResult(user);
   }
 
   private buildResult(user: User): AuthResult {

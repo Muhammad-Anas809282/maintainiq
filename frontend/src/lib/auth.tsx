@@ -15,6 +15,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  loginWithToken: (token: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -59,13 +60,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  // Used by the OAuth callback page — token already issued by the backend,
+  // just persist it and fetch the profile.
+  const loginWithToken = useCallback(async (token: string) => {
+    setToken(token);
+    const me = await api<AuthUser>("/auth/me");
+    setUser(me);
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, loginWithToken, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

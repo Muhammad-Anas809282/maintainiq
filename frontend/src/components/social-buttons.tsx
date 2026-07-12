@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { API_URL } from "@/lib/api";
 
 function GoogleIcon() {
   return (
@@ -48,9 +49,9 @@ function GithubIcon() {
 export function SocialButtons() {
   const [note, setNote] = useState(false);
   const providers = [
-    { name: "Google", icon: <GoogleIcon /> },
-    { name: "Microsoft", icon: <MicrosoftIcon /> },
-    { name: "GitHub", icon: <GithubIcon /> },
+    { name: "Google", icon: <GoogleIcon />, href: `${API_URL}/auth/google` },
+    { name: "Microsoft", icon: <MicrosoftIcon />, href: null },
+    { name: "GitHub", icon: <GithubIcon />, href: null },
   ];
 
   return (
@@ -64,10 +65,10 @@ export function SocialButtons() {
       </div>
       <div className="mt-4 flex items-center justify-center gap-4">
         {providers.map((p, i) => (
-          <motion.button
+          <motion.a
             key={p.name}
-            type="button"
-            onClick={() => setNote(true)}
+            href={p.href ?? undefined}
+            onClick={p.href ? undefined : () => setNote(true)}
             aria-label={`Continue with ${p.name}`}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -77,7 +78,7 @@ export function SocialButtons() {
             className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[--color-border-strong] bg-[--color-surface] shadow-[--shadow-card] transition-colors hover:border-[--color-primary]"
           >
             {p.icon}
-          </motion.button>
+          </motion.a>
         ))}
       </div>
       {note && (

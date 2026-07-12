@@ -174,4 +174,41 @@ describe('AuthService', () => {
       );
     });
   });
+
+  describe('oauthLogin', () => {
+    it('logs in an existing user matched by email without creating a new one', async () => {
+      users.findByEmail.mockResolvedValue(baseUser);
+
+      const result = await service.oauthLogin({
+        email: baseUser.email,
+        name: 'Ignored Name',
+      });
+
+      expect(users.create).not.toHaveBeenCalled();
+      expect(result.accessToken).toBe('signed.jwt.token');
+      expect(result.user.email).toBe(baseUser.email);
+    });
+
+    it('creates a new TECHNICIAN user on first Google sign-in', async () => {
+      users.findByEmail.mockResolvedValue(null);
+      users.create.mockResolvedValue({
+        ...baseUser,
+        id: 'new-1',
+        email: 'newperson@gmail.com',
+        name: 'New Person',
+        role: UserRole.TECHNICIAN,
+      });
+
+      const result = await service.oauthLogin({
+        email: 'newperson@gmail.com',
+        name: 'New Person',
+      });
+
+      expect(users.create).toHaveBeenCalledTimes(1);
+      const created = users.create.mock.calls[0][0];
+      expect(created.role).toBe(UserRole.TECHNICIAN);
+      expect(created.email).toBe('newperson@gmail.com');
+      expect(result.user.role).toBe(UserRole.TECHNICIAN);
+    });
+  });
 });
