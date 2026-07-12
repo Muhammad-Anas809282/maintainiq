@@ -21,7 +21,7 @@ import {
 } from "@/components/ui";
 import { SelectMenu } from "@/components/select-menu";
 import Image from "next/image";
-import { Reveal, motion } from "@/components/motion";
+import { motion } from "@/components/motion";
 import { AnimatePresence } from "motion/react";
 import { IconSparkles, IconCheck } from "@/components/icons";
 import {
@@ -117,7 +117,13 @@ export default function PublicAssetPage() {
 
   return (
     <Shell>
-      <Reveal direction="scale">
+      {/* Mount-triggered (not scroll-triggered) — this card is always
+          above the fold, so it must never be caught in a "hidden" state. */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      >
       <Card glass className="overflow-hidden !rounded-[var(--radius-editorial)]">
         <div
           className="grain relative overflow-hidden px-5 py-5"
@@ -151,7 +157,7 @@ export default function PublicAssetPage() {
           />
         </dl>
       </Card>
-      </Reveal>
+      </motion.div>
 
       {asset.isRetired && (
         <Alert tone="warning">
@@ -160,7 +166,11 @@ export default function PublicAssetPage() {
       )}
 
       {asset.recentActivity.length > 0 && (
-        <Reveal delay={0.08} direction="left">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+        >
         <Card glass className="p-5">
           <h2 className="font-display text-sm font-semibold text-[var(--color-text)]">
             Recent activity
@@ -181,7 +191,7 @@ export default function PublicAssetPage() {
             ))}
           </ul>
         </Card>
-        </Reveal>
+        </motion.div>
       )}
 
       {asset.canReportIssue && (
